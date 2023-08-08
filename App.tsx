@@ -1,22 +1,20 @@
-import {StatusBar} from 'expo-status-bar';
-import {StyleSheet, Text, View} from 'react-native';
-import {Button} from '@rneui/themed';
+import {Dimensions, StyleSheet} from 'react-native';
+import {NavigationContainer} from "@react-navigation/native";
+import Main from "./pages/Main";
+import {MenuProvider} from "react-native-popup-menu";
 
 export default function App() {
     return (
-        <View style={styles.container}>
-            <Text>Open up App.js to start working on your app!</Text>
-            <StatusBar style="auto"/>
-            <Button title={<Text>hello word</Text>}/>
-        </View>
+        <NavigationContainer style={[styles.container]}>
+            <MenuProvider>
+                <Main></Main>
+            </MenuProvider>
+        </NavigationContainer>
     )
 }
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
-        backgroundColor: '#fff',
-        alignItems: 'center',
-        justifyContent: 'center',
+        height: Dimensions.get('screen').height
     },
 });
