@@ -1,10 +1,12 @@
 import {StyleSheet, Image, TouchableOpacity, Text, View} from 'react-native'
 import {createBottomTabNavigator} from "@react-navigation/bottom-tabs";
 import Home from "../home/Home";
+import Mine from "../mine/Mine";
 
 
 const tabIcons = {
     Home: [require('../../assets/home.png'), require('../../assets/home_active.png')],
+    Mine: [require('../../assets/mine.png'), require('../../assets/mine_active.png')],
 }
 
 const Tabs = createBottomTabNavigator();
@@ -89,16 +91,16 @@ export default function Tab() {
                 component={Home}
             >
             </Tabs.Screen>
-            {/*<Tabs.Screen*/}
-            {/*    name="Mine"*/}
-            {/*    options={{*/}
-            {/*        headerShown: false,*/}
-            {/*        tabBarLabel: '我的',*/}
-            {/*        unmountOnBlur: true*/}
-            {/*    }}*/}
-            {/*    component={Mine}*/}
-            {/*>*/}
-            {/*</Tabs.Screen>*/}
+            <Tabs.Screen
+                name="Mine"
+                options={{
+                    headerShown: false,
+                    tabBarLabel: '我的',
+                    unmountOnBlur: true
+                }}
+                component={Mine}
+            >
+            </Tabs.Screen>
         </Tabs.Navigator>
     )
 }
@@ -123,7 +125,7 @@ const styles = StyleSheet.create({
         fontSize: 12,
         fontWeight: '400',
         textAlign: 'center',
-        color: '#1C1C1E'
+        color: '#8a8a8a'
     },
     tabBarItemTextActive: {
         color: '#441188'
