@@ -10,7 +10,7 @@ export default function Login() {
     const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList, 'Login'>>()
 
     const onLogin = () => {
-        navigation.navigate("Home")
+        navigation.navigate("Tab")
     }
 
     return (

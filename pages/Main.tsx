@@ -1,11 +1,13 @@
 import {createNativeStackNavigator} from "@react-navigation/native-stack";
 import Login from "./login/Login";
 import Home from "./home/Home";
+import Tab from "./tab/Tab";
 
 
 export type RootStackParamList = {
     Login: undefined,
-    Home: undefined
+    Home: undefined,
+    Tab: undefined
 }
 
 export default function Main() {
@@ -22,6 +24,11 @@ export default function Main() {
             < Stack.Screen
                 name="Login"
                 component={Login}
+                options={{headerShown: false}}
+            ></Stack.Screen>
+            < Stack.Screen
+                name="Tab"
+                component={Tab}
                 options={{headerShown: false}}
             ></Stack.Screen>
             < Stack.Screen
