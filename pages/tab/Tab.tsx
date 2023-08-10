@@ -2,6 +2,7 @@ import {StyleSheet, Image, TouchableOpacity, Text, View} from 'react-native'
 import {createBottomTabNavigator} from "@react-navigation/bottom-tabs";
 import Home from "../home/Home";
 import Mine from "../mine/Mine";
+import {theme} from "../common/Theme";
 
 
 const tabIcons = {
@@ -78,7 +79,7 @@ export default function Tab() {
         <Tabs.Navigator
             tabBar={props => <CustomTabBar {...props}/>}
             screenOptions={
-                {tabBarActiveTintColor: '#441188', tabBarStyle: {paddingBottom: 4, paddingTop: 4},}
+                {tabBarActiveTintColor: theme.primary, tabBarStyle: {paddingBottom: 4, paddingTop: 4},}
             }
         >
             <Tabs.Screen
@@ -109,13 +110,13 @@ const styles = StyleSheet.create({
     container: {
         alignItems: 'center',
         paddingLeft: 32,
-        paddingRight: 32
+        paddingRight: 32,
     },
     tabBarBox: {
         flexDirection: 'row',
-        backgroundColor: '#cdcdcd',
-        borderTopLeftRadius: 15,
-        borderTopRightRadius: 15,
+        backgroundColor: theme.containerBackgroundColor,
+        paddingTop: 5,
+        paddingBottom: 5
     },
     tabBarItem: {
         flex: 1,
@@ -125,9 +126,9 @@ const styles = StyleSheet.create({
         fontSize: 12,
         fontWeight: '400',
         textAlign: 'center',
-        color: '#8a8a8a'
+        color: theme.tabTxtColor
     },
     tabBarItemTextActive: {
-        color: '#441188'
+        color: theme.primary
     },
 });
