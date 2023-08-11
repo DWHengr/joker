@@ -2,15 +2,9 @@ import React from 'react';
 import {View, Text, TouchableOpacity, Image, StyleSheet} from 'react-native';
 import {useNavigation} from "@react-navigation/native";
 
-type OptionType = {
-    title: string,
-    onPress(): void;
-}
-
 interface CustomHeaderProps {
-    title: string;
-    headerOption: boolean
-    options: OptionType[]
+    title: string,
+    isReturn: boolean
 }
 
 const CustomHeaderReturn = ({title, isReturn}: CustomHeaderProps) => {
