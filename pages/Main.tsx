@@ -2,6 +2,7 @@ import {createNativeStackNavigator} from "@react-navigation/native-stack";
 import Login from "./login/Login";
 import Home from "./home/Home";
 import Tab from "./tab/Tab";
+import Douniu from "./douniu/Douniu";
 
 
 export type RootStackParamList = {
@@ -34,6 +35,11 @@ export default function Main() {
             < Stack.Screen
                 name="Home"
                 component={Home}
+                options={{headerShown: false}}
+            ></Stack.Screen>
+            < Stack.Screen
+                name="Douniu"
+                component={Douniu}
                 options={{headerShown: false}}
             ></Stack.Screen>
         </Stack.Navigator>
