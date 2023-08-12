@@ -134,79 +134,84 @@ export default function Douniu() {
                                     </Button>
                                 </View>
                             </View>
-                            <View style={{
-                                flexDirection: 'colum',
-                                justifyContent: 'center',
-                                alignItems: 'center'
-                            }}>
-                                <Text>牛2</Text>
-                            </View>
                         </View>
                     </View>
                 </View>
-                <ScrollView style={{height: '100%'}}>
+                <View style={{
+                    backgroundColor: '#efefef',
+                    margin: 10,
+                    marginTop: 20,
+                    padding: 20,
+                    height: '70%',
+                    borderRadius: 20
+                }}>
                     <View>
-                        <Text>222</Text>
-                        <Text>222</Text>
-                        <Text>222</Text>
-                        <Text>222</Text>
-                        <Text>222</Text>
-                        <Text>222</Text>
-                        <Text>222</Text>
-                        <Text>222</Text>
-                        <Text>222</Text>
-                        <Text>222</Text>
-                        <Text>222</Text>
-                        <Text>222</Text>
-                        <Text>222</Text>
-                        <Text>222</Text>
-                        <Text>222</Text>
-                        <Text>222</Text>
-                        <Text>222</Text>
-                        <Text>222</Text>
-                        <Text>222</Text>
-                        <Text>222</Text>
-                        <Text>222</Text>
-                        <Text>222</Text>
-                        <Text>222</Text>
-                        <Text>222</Text>
-                        <Text>222</Text>
-                        <Text>222</Text>
-                        <Text>222</Text>
-                        <Text>222</Text>
-                        <Text>222</Text>
-                        <Text>222</Text>
-                        <Text>222</Text>
-                        <Text>222</Text>
-                        <Text>222</Text>
-                        <Text>222</Text>
-                        <Text>222</Text>
-                        <Text>222</Text>
-                        <Text>222</Text>
-                        <Text>222</Text>
-                        <Text>222</Text>
-                        <Text>222</Text>
-                        <Text>222</Text>
-                        <Text>222</Text>
-                        <Text>222</Text>
-                        <Text>222</Text>
-                        <Text>222</Text>
-                        <Text>222</Text>
-                        <Text>222</Text>
-                        <Text>222</Text>
-                        <Text>222</Text>
-                        <Text>222</Text>
-                        <Text>222</Text>
-                        <Text>222</Text>
-                        <Text>222</Text>
-                        <Text>222</Text>
-                        <Text>222</Text>
-                        <Text>222</Text>
-                        <Text>222</Text>
-                        <Text>222</Text>
-                        <Text>222</Text>
+                        <Text>房间号：112</Text>
                     </View>
-                </ScrollView>
+                    <ScrollView style={{height: '70%', width: '100%',}}>
+                        <View>
+                            <Text>222</Text>
+                            <Text>222</Text>
+                            <Text>222</Text>
+                            <Text>222</Text>
+                            <Text>222</Text>
+                            <Text>222</Text>
+                            <Text>222</Text>
+                            <Text>222</Text>
+                            <Text>222</Text>
+                            <Text>222</Text>
+                            <Text>222</Text>
+                            <Text>222</Text>
+                            <Text>222</Text>
+                            <Text>222</Text>
+                            <Text>222</Text>
+                            <Text>222</Text>
+                            <Text>222</Text>
+                            <Text>222</Text>
+                            <Text>222</Text>
+                            <Text>222</Text>
+                            <Text>222</Text>
+                            <Text>222</Text>
+                            <Text>222</Text>
+                            <Text>222</Text>
+                            <Text>222</Text>
+                            <Text>222</Text>
+                            <Text>222</Text>
+                            <Text>222</Text>
+                            <Text>222</Text>
+                            <Text>222</Text>
+                            <Text>222</Text>
+                            <Text>222</Text>
+                            <Text>222</Text>
+                            <Text>222</Text>
+                            <Text>222</Text>
+                            <Text>222</Text>
+                            <Text>222</Text>
+                            <Text>222</Text>
+                            <Text>222</Text>
+                            <Text>222</Text>
+                            <Text>222</Text>
+                            <Text>222</Text>
+                            <Text>222</Text>
+                            <Text>222</Text>
+                            <Text>222</Text>
+                            <Text>222</Text>
+                            <Text>222</Text>
+                            <Text>222</Text>
+                            <Text>222</Text>
+                            <Text>222</Text>
+                            <Text>222</Text>
+                            <Text>222</Text>
+                            <Text>222</Text>
+                            <Text>222</Text>
+                            <Text>222</Text>
+                            <Text>222</Text>
+                            <Text>222</Text>
+                            <Text>222</Text>
+                            <Text>222</Text>
+                        </View>
+                    </ScrollView>
+                </View>
             </View>
         </SafeAreaView>
     )
