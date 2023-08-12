@@ -15,9 +15,15 @@ const cardsImg =
         spade: require('../../assets/poker-spade.png')
     }
 
+const CardValues = {
+    'A': 1, '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9, '10': 10, 'J': 10, 'Q': 10, 'K': 10
+};
+
+
 export default function Douniu() {
     const [pokerVisible, setPokerVisible] = useState(false);
     const [currentSelectionCardIndex, setCurrentSelectionCardIndex] = useState(0);
+    const [niuResult, setNiuResult] = useState(-1);
     const [cards, setCards] = useState([
         {num: "A", suit: "heart"},
         {num: "K", suit: "club"},
@@ -29,6 +35,28 @@ export default function Douniu() {
     const onSelectCardAndNum = async (cardIndex) => {
         await setCurrentSelectionCardIndex(cardIndex);
         setPokerVisible(true);
+    }
+
+    const onCalculateNiu = () => {
+        const n = cards.length;
+        let niu = 0;
+        for (let i = 0; i < n - 2; i++) {
+            for (let j = i + 1; j < n - 1; j++) {
+                for (let k = j + 1; k < n; k++) {
+                    const sum = CardValues[cards[i].num] + CardValues[cards[j].num] + CardValues[cards[k].num];
+                    if (sum % 10 === 0) {
+                        let remainingSum = 0;
+                        for (let l = 0; l < n; l++) {
+                            if (l !== i && l !== j && l !== k) {
+                                remainingSum += CardValues[cards[l].num];
+                            }
+                        }
+                        niu = remainingSum % 10 === 0 ? 10 : remainingSum % 10;
+                    }
+                }
+            }
+        }
+        setNiuResult(niu)
     }
     return (
         <SafeAreaView style={[styles.container]}>
@@ -44,7 +72,7 @@ export default function Douniu() {
                 defaultSelections={cards[currentSelectionCardIndex]}
             />
             <CustomHeaderReturn title='斗牛' isReturn={true}></CustomHeaderReturn>
-            <View style={{backgroundColor: '#ffffff'}}>
+            <View style={{backgroundColor: '#ffffff', height: '100%'}}>
                 <View style={{flexDirection: 'row', justifyContent: 'center', marginTop: 15}}>
                     <View style={{height: 130, width: '100%', flexDirection: 'colum',}}>
                         <View style={{flex: 1, flexDirection: 'colum'}}>
@@ -70,12 +98,27 @@ export default function Douniu() {
                                 ))}
                             </View>
                             <View style={{
+                                flexDirection: 'row',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                marginBottom: 8
+                            }}>
+                                {niuResult == 0 && <Text>没</Text>}
+                                <Image style={{width: 20, height: 20}}
+                                       source={require('../../assets/niu.png')}/>
+                                {niuResult == 10 && <Image style={{width: 20, height: 20}}
+                                                           source={require('../../assets/niu.png')}/>}
+                                {niuResult > 0 && niuResult < 10 && <Text>{niuResult}</Text>}
+
+                            </View>
+                            <View style={{
                                 flexDirection: 'colum',
                                 justifyContent: 'center',
                                 alignItems: 'center'
                             }}>
                                 <View style={{width: 200}}>
                                     <Button
+                                        onPress={onCalculateNiu}
                                         ViewComponent={LinearGradient}
                                         linearGradientProps={{
                                             colors: [theme.secondary, theme.minor],
