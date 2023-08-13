@@ -2,7 +2,7 @@ import {StyleSheet, ScrollView, Text, View, TouchableOpacity, Image} from 'react
 import {SafeAreaView} from "react-native-safe-area-context";
 import CustomHeaderReturn from "../../component/CustomHeaderReturn";
 import {theme} from "../common/Theme";
-import {Button} from "@rneui/themed";
+import {Button, Input} from "@rneui/themed";
 import {useState} from "react";
 import PokerSegmentPicker from "../../component/PokerSegmentPicker";
 import {LinearGradient} from 'expo-linear-gradient';
@@ -18,6 +18,57 @@ const cardsImg =
 const CardValues = {
     'A': 1, '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9, '10': 10, 'J': 10, 'Q': 10, 'K': 10
 };
+
+const userInfos = [
+    {
+        name: 'Heath',
+        score: 100,
+        portrait: '',
+        status: '正在结算中...',
+    },
+    {
+        name: 'Heath2',
+        score: 100,
+        portrait: '',
+        status: '牛2',
+    },
+    {
+        name: 'Heath3',
+        score: -20,
+        portrait: '',
+        status: '正在结算中...',
+    },
+    {
+        name: 'Heath4',
+        score: 100,
+        portrait: '',
+        status: '没牛',
+    },
+    {
+        name: 'Heath5',
+        score: 100,
+        portrait: '',
+        status: '正在结算中...',
+    },
+    {
+        name: 'Heath5',
+        score: 100,
+        portrait: '',
+        status: '正在结算中...',
+    },
+    {
+        name: 'Heath5',
+        score: 100,
+        portrait: '',
+        status: '正在结算中...',
+    },
+    {
+        name: 'Heath5',
+        score: 100,
+        portrait: '',
+        status: '正在结算中...',
+    },
+];
 
 
 export default function Douniu() {
@@ -137,78 +188,38 @@ export default function Douniu() {
                         </View>
                     </View>
                 </View>
-                <View style={{
-                    backgroundColor: '#efefef',
-                    margin: 10,
-                    marginTop: 20,
-                    padding: 20,
-                    height: '70%',
-                    borderRadius: 20
-                }}>
+                <View style={[styles.userInfoListContainer]}>
                     <View>
-                        <Text>房间号：112</Text>
+                        <Text>房间号：10888</Text>
                     </View>
                     <ScrollView style={{height: '70%', width: '100%',}}>
                         <View>
-                            <Text>222</Text>
-                            <Text>222</Text>
-                            <Text>222</Text>
-                            <Text>222</Text>
-                            <Text>222</Text>
-                            <Text>222</Text>
-                            <Text>222</Text>
-                            <Text>222</Text>
-                            <Text>222</Text>
-                            <Text>222</Text>
-                            <Text>222</Text>
-                            <Text>222</Text>
-                            <Text>222</Text>
-                            <Text>222</Text>
-                            <Text>222</Text>
-                            <Text>222</Text>
-                            <Text>222</Text>
-                            <Text>222</Text>
-                            <Text>222</Text>
-                            <Text>222</Text>
-                            <Text>222</Text>
-                            <Text>222</Text>
-                            <Text>222</Text>
-                            <Text>222</Text>
-                            <Text>222</Text>
-                            <Text>222</Text>
-                            <Text>222</Text>
-                            <Text>222</Text>
-                            <Text>222</Text>
-                            <Text>222</Text>
-                            <Text>222</Text>
-                            <Text>222</Text>
-                            <Text>222</Text>
-                            <Text>222</Text>
-                            <Text>222</Text>
-                            <Text>222</Text>
-                            <Text>222</Text>
-                            <Text>222</Text>
-                            <Text>222</Text>
-                            <Text>222</Text>
-                            <Text>222</Text>
-                            <Text>222</Text>
-                            <Text>222</Text>
-                            <Text>222</Text>
-                            <Text>222</Text>
-                            <Text>222</Text>
-                            <Text>222</Text>
-                            <Text>222</Text>
-                            <Text>222</Text>
-                            <Text>222</Text>
-                            <Text>222</Text>
-                            <Text>222</Text>
-                            <Text>222</Text>
-                            <Text>222</Text>
-                            <Text>222</Text>
-                            <Text>222</Text>
-                            <Text>222</Text>
-                            <Text>222</Text>
-                            <Text>222</Text>
+                            {
+                                userInfos?.map(info => (
+                                    <View
+                                        style={[styles.userInfoContainer]}>
+                                        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                                            <View style={{width: 50, height: 50, borderRadius: 10}}>
+                                                <Image style={{width: 50, height: 50, borderRadius: 10}}
+                                                       source={{
+                                                           uri: 'http://pic.imeitou.com/uploads/allimg/211216/3-21121609215O03.jpg'
+                                                       }}>
+                                                </Image>
+                                            </View>
+                                            <View style={{marginLeft: 6}}>
+                                                <Text style={{color: theme.secondary}}>{info.name}</Text>
+                                                <Text style={{
+                                                    fontSize: 16,
+                                                    marginTop: 5,
+                                                    color: info.score > 0 ? '#63ad4f' : theme.minor,
+                                                    fontWeight: 600
+                                                }}>{info.score}</Text>
+                                            </View>
+                                        </View>
+                                        <View><Text>正在结算中...</Text></View>
+                                    </View>
+                                ))
+                            }
                         </View>
                     </ScrollView>
                 </View>
@@ -238,6 +249,24 @@ const styles = StyleSheet.create({
         height: 60,
         alignItems: 'center',
         justifyContent: 'center',
+    },
+    userInfoListContainer: {
+        backgroundColor: '#efefef',
+        margin: 10,
+        marginTop: 20,
+        padding: 20,
+        height: '70%',
+        borderRadius: 20
+    },
+    userInfoContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        height: 80,
+        borderBottomWidth: 1,
+        borderBottomColor: theme.secondary,
+        padding: 6,
+        borderRadius: 12,
+        backgroundColor: "#ffffff"
     }
-
 });
