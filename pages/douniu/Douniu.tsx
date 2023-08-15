@@ -218,7 +218,7 @@ export default function Douniu() {
                     <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
                         <View>
                             <Text style={{color: theme.secondary, fontSize: 12}}>房间号：10888</Text>
-                            <Text style={{color: theme.minor, fontSize: 12}}>第2轮</Text>
+                            <Text style={{color: theme.primary, fontSize: 12}}>第2轮</Text>
                         </View>
                         <IconSelectMenu
                             type="dots-three-horizontal"
@@ -243,7 +243,7 @@ export default function Douniu() {
                                     borderRadius: 4,
                                     paddingLeft: 2,
                                     paddingRight: 2,
-                                    backgroundColor: theme.minor,
+                                    backgroundColor: theme.primary,
                                 }}
                                 keyboardType="numeric"
                                 value={scoreResult}
@@ -309,7 +309,7 @@ export default function Douniu() {
                                                     <Text style={{
                                                         fontSize: 16,
                                                         marginTop: 5,
-                                                        color: info.score > 0 ? '#63ad4f' : theme.minor,
+                                                        color: info.score > 0 ? '#63ad4f' : theme.primary,
                                                         fontWeight: 600
                                                     }}>{info.score}</Text>
                                                 </View>

@@ -13,7 +13,7 @@ export default function IconSelectMenu({options, type}) {
         <Menu ref={menu}>
             <MenuTrigger>
                 <TouchableOpacity onPress={openMenu} hitSlop={{top: 20, right: 20, bottom: 20, left: 20,}}>
-                    <Entypo name={type} size={20} color={theme.minor}/>
+                    <Entypo name={type} size={20} color={theme.primary}/>
                 </TouchableOpacity>
             </MenuTrigger>
 
@@ -46,6 +46,6 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         fontSize: 16,
         fontWeight: '400',
-        color: theme.minor
+        color: theme.primary
     }
 })

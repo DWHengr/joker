@@ -12,13 +12,13 @@ export default function GradualButton({size, text, buttonStyle, isPros, onPress}
             size={size}
             ViewComponent={LinearGradient}
             linearGradientProps={{
-                colors: [theme.secondary, theme.minor],
+                colors: [theme.secondary, theme.primary],
                 end: isPros ? {x: 0, y: 0.5} : {x: 1, y: 0.5},
                 start: isPros ? {x: 1, y: 0.5} : {x: 0, y: 0.5},
             }}
             buttonStyle={{
                 ...buttonStyle,
-                backgroundColor: theme.minor,
+                backgroundColor: theme.primary,
             }}
         >
             <Text style={{color: '#ffffff'}}>{text}</Text>
