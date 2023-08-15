@@ -2,10 +2,11 @@ import {StyleSheet, ScrollView, Text, View, TouchableOpacity, Image, TextInput} 
 import {SafeAreaView} from "react-native-safe-area-context";
 import CustomHeaderReturn from "../../component/CustomHeaderReturn";
 import {theme} from "../common/Theme";
-import {Button} from "@rneui/themed";
 import {useState} from "react";
 import PokerSegmentPicker from "../../component/PokerSegmentPicker";
-import {LinearGradient} from 'expo-linear-gradient';
+import GradualButton from "../../component/GradualButton";
+import BottomModal from "../../component/BottomModal";
+import IconTextButton from "../../component/IconTextButton";
 
 
 const cardsImg =
@@ -100,7 +101,7 @@ export default function Douniu() {
     const [pokerVisible, setPokerVisible] = useState(false);
     const [currentSelectionCardIndex, setCurrentSelectionCardIndex] = useState(0);
     const [niuResult, setNiuResult] = useState(-1);
-    const [scoreResult, setScoreResult] = useState(-1);
+    const [scoreResult, setScoreResult] = useState("0");
     const [cards, setCards] = useState([
         {num: "A", suit: "heart"},
         {num: "K", suit: "club"},
@@ -108,6 +109,9 @@ export default function Douniu() {
         {num: "Q", suit: "spade"},
         {num: "8", suit: "heart"},
     ])
+
+    const [userOpeModalVisible, setUserOpeModalVisible] = useState(false);
+
 
     const onSelectCardAndNum = async (cardIndex) => {
         await setCurrentSelectionCardIndex(cardIndex);
@@ -194,21 +198,7 @@ export default function Douniu() {
                                 alignItems: 'center'
                             }}>
                                 <View style={{width: 200}}>
-                                    <Button
-                                        onPress={onCalculateNiu}
-                                        ViewComponent={LinearGradient}
-                                        linearGradientProps={{
-                                            colors: [theme.secondary, theme.minor],
-                                            start: {x: 0, y: 0.5},
-                                            end: {x: 1, y: 0.5},
-                                        }}
-                                        buttonStyle={{
-                                            borderRadius: 15,
-                                            backgroundColor: theme.minor,
-                                        }}
-                                    >
-                                        <Text style={{color: '#ffffff'}}>计算牛牛</Text>
-                                    </Button>
+                                    <GradualButton radius={15} text='计算牛牛' onPress={onCalculateNiu}/>
                                 </View>
                             </View>
                         </View>
@@ -219,22 +209,12 @@ export default function Douniu() {
                         <Text>房间号：10888</Text>
                     </View>
                     <View style={{flexDirection: 'row', height: 50, justifyContent: 'center', alignItems: 'center'}}>
-                        <Button
-                            size='sm'
-                            ViewComponent={LinearGradient}
-                            linearGradientProps={{
-                                colors: [theme.secondary, theme.minor],
-                                start: {x: 0, y: 0.5},
-                                end: {x: 1, y: 0.5},
+                        <GradualButton
+                            size='sm' buttonStyle={{width: 30, borderRadius: 5}} text="-"
+                            onPress={() => {
+                                setScoreResult((parseInt(scoreResult) - 1) + "")
                             }}
-                            buttonStyle={{
-                                width: 30,
-                                borderRadius: 5,
-                                backgroundColor: theme.minor,
-                            }}
-                        >
-                            <Text style={{color: '#ffffff'}}>-</Text>
-                        </Button>
+                        />
                         <View style={{
                             width: 40
                         }}>
@@ -253,112 +233,114 @@ export default function Douniu() {
                                 onChangeText={(text) => setScoreResult(text.replace(/[^-0-9]/g, ''))}
                             ></TextInput>
                         </View>
-                        <Button
+                        <GradualButton
+                            size='sm' buttonStyle={{width: 30, borderRadius: 5}} isPros={true} text="+"
+                            onPress={
+                                () => setScoreResult((parseInt(scoreResult) + 1) + "")
+                            }
+                        />
+                        <GradualButton
                             size='sm'
-                            ViewComponent={LinearGradient}
-                            linearGradientProps={{
-                                colors: [theme.secondary, theme.minor],
-                                end: {x: 0, y: 0.5},
-                                start: {x: 1, y: 0.5},
-                            }}
-                            buttonStyle={{
-                                width: 30,
-                                borderRadius: 5,
-                                backgroundColor: theme.minor,
-                            }}
-                        >
-                            <Text style={{color: '#ffffff'}}>+</Text>
-                        </Button>
-                        <Button
+                            buttonStyle={{width: 90, borderRadius: 5, marginLeft: 2}}
+                            text="提交"
+                        />
+                        <GradualButton
                             size='sm'
-                            onPress={onCalculateNiu}
-                            ViewComponent={LinearGradient}
-                            linearGradientProps={{
-                                colors: [theme.secondary, theme.minor],
-                                start: {x: 0, y: 0.5},
-                                end: {x: 1, y: 0.5},
-                            }}
-                            buttonStyle={{
-                                width: 90,
-                                borderRadius: 5,
-                                marginLeft: 2,
-                                backgroundColor: theme.minor,
-                            }}
-                        >
-                            <Text style={{color: '#ffffff'}}>提交</Text>
-                        </Button>
-                        <Button
-                            size='sm'
-                            onPress={onCalculateNiu}
-                            ViewComponent={LinearGradient}
-                            linearGradientProps={{
-                                colors: [theme.secondary, theme.minor],
-                                end: {x: 0, y: 0.5},
-                                start: {x: 1, y: 0.5},
-                            }}
-                            buttonStyle={{
-                                width: 90,
-                                borderRadius: 5,
-                                marginLeft: 2,
-                                backgroundColor: theme.minor,
-                            }}
-                        >
-                            <Text style={{color: '#ffffff'}}>准备</Text>
-                        </Button>
+                            buttonStyle={{width: 90, borderRadius: 5, marginLeft: 2}}
+                            isPros={true}
+                            text="准备"
+                        />
                     </View>
                     <ScrollView style={{height: '70%', width: '100%',}}>
                         <View>
                             {
                                 userInfos?.map(info => (
-                                    <View
-                                        key={info.id}
-                                        style={[styles.userInfoContainer]}>
-                                        <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                                            <View style={{width: 50, height: 50, borderRadius: 10}}>
-                                                <Image style={{width: 50, height: 50, borderRadius: 10}}
-                                                       source={{
-                                                           uri: 'http://pic.imeitou.com/uploads/allimg/211216/3-21121609215O03.jpg'
-                                                       }}>
-                                                </Image>
-                                            </View>
-                                            <View style={{marginLeft: 6}}>
-                                                <View style={{flexDirection: 'row'}}>
-                                                    <Text style={{color: theme.secondary}}>{info.name}</Text>
-                                                    {
-                                                        info.isOwner ? <Image
-                                                            style={{
-                                                                height: 20,
-                                                                width: 20
-                                                            }}
-                                                            source={require('../../assets/owner.png')}
-                                                        /> : <></>
-                                                    }
-                                                    {
-                                                        info.isDealers ? <Image
-                                                            style={{
-                                                                height: 20,
-                                                                width: 20
-                                                            }}
-                                                            source={require('../../assets/crown.png')}
-                                                        /> : <></>
-                                                    }
+                                    <TouchableOpacity key={info.id} onLongPress={() => setUserOpeModalVisible(true)}>
+                                        <View style={[styles.userInfoContainer]}>
+                                            <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                                                <View style={{width: 50, height: 50, borderRadius: 10}}>
+                                                    <Image style={{width: 50, height: 50, borderRadius: 10}}
+                                                           source={{
+                                                               uri: 'http://pic.imeitou.com/uploads/allimg/211216/3-21121609215O03.jpg'
+                                                           }}>
+                                                    </Image>
                                                 </View>
-                                                <Text style={{
-                                                    fontSize: 16,
-                                                    marginTop: 5,
-                                                    color: info.score > 0 ? '#63ad4f' : theme.minor,
-                                                    fontWeight: 600
-                                                }}>{info.score}</Text>
+                                                <View style={{marginLeft: 6}}>
+                                                    <View style={{flexDirection: 'row'}}>
+                                                        <Text style={{color: theme.secondary}}>{info.name}</Text>
+                                                        {
+                                                            info.isOwner ? <Image
+                                                                style={{
+                                                                    height: 20,
+                                                                    width: 20
+                                                                }}
+                                                                source={require('../../assets/owner.png')}
+                                                            /> : <></>
+                                                        }
+                                                        {
+                                                            info.isDealers ? <Image
+                                                                style={{
+                                                                    height: 20,
+                                                                    width: 20
+                                                                }}
+                                                                source={require('../../assets/crown.png')}
+                                                            /> : <></>
+                                                        }
+                                                    </View>
+                                                    <Text style={{
+                                                        fontSize: 16,
+                                                        marginTop: 5,
+                                                        color: info.score > 0 ? '#63ad4f' : theme.minor,
+                                                        fontWeight: 600
+                                                    }}>{info.score}</Text>
+                                                </View>
                                             </View>
+                                            <View
+                                                style={{
+                                                    width: 100,
+                                                    alignItems: 'center'
+                                                }}><Text>{info.status}</Text></View>
                                         </View>
-                                        <View
-                                            style={{width: 100, alignItems: 'center'}}><Text>{info.status}</Text></View>
-                                    </View>
+                                    </TouchableOpacity>
                                 ))
                             }
                         </View>
                     </ScrollView>
                 </View>
+            </View>
+            <View>
+                <BottomModal
+                    title="成员操作"
+                    visible={userOpeModalVisible}
+                    onClose={() => setUserOpeModalVisible(false)}
+                >
+                    <View style={{flexDirection: 'row', alignItems: 'flex-start'}}>
+                        <IconTextButton
+                            style={{margin: 8}}
+                            text='设置庄家'
+                            source={require('../../assets/crown.png')}
+                            onPress={() => setUserOpeModalVisible(false)}
+                        />
+                        <IconTextButton
+                            style={{margin: 8}}
+                            text='转让房主'
+                            source={require('../../assets/owner.png')}
+                            onPress={() => setUserOpeModalVisible(false)}
+                        />
+                        <IconTextButton
+                            style={{margin: 8}}
+                            text='积分+1'
+                            source={require('../../assets/increase.png')}
+                            onPress={() => setUserOpeModalVisible(false)}
+                        />
+                        <IconTextButton
+                            style={{margin: 8}}
+                            text='积分-1'
+                            source={require('../../assets/decrease.png')}
+                            onPress={() => setUserOpeModalVisible(false)}
+                        />
+                    </View>
+                </BottomModal>
             </View>
         </SafeAreaView>
     )
