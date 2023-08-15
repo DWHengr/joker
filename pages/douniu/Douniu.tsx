@@ -7,6 +7,8 @@ import PokerSegmentPicker from "../../component/PokerSegmentPicker";
 import GradualButton from "../../component/GradualButton";
 import BottomModal from "../../component/BottomModal";
 import IconTextButton from "../../component/IconTextButton";
+import CustomSwitch from "../../component/CustomSwitch";
+import IconSelectMenu from "../../component/IconSelectMenu";
 
 
 const cardsImg =
@@ -69,7 +71,7 @@ const userInfos = [
     },
     {
         id: '6',
-        name: 'Heath5',
+        name: 'Heath6',
         score: 100,
         portrait: '',
         status: '正在结算中...',
@@ -78,7 +80,7 @@ const userInfos = [
     },
     {
         id: '7',
-        name: 'Heath5',
+        name: 'Heath7',
         score: 100,
         portrait: '',
         status: '正在结算中...',
@@ -87,7 +89,7 @@ const userInfos = [
     },
     {
         id: '8',
-        name: 'Heath5',
+        name: 'Heath8',
         score: 100,
         portrait: '',
         status: '正在结算中...',
@@ -111,6 +113,7 @@ export default function Douniu() {
     ])
 
     const [userOpeModalVisible, setUserOpeModalVisible] = useState(false);
+    const [cardsVisible, setCardsVisible] = useState(false);
 
 
     const onSelectCardAndNum = async (cardIndex) => {
@@ -152,61 +155,77 @@ export default function Douniu() {
                 }}
                 defaultSelections={cards[currentSelectionCardIndex]}
             />
-            <CustomHeaderReturn title='斗牛' isReturn={true}></CustomHeaderReturn>
             <View style={{backgroundColor: '#ffffff', height: '100%'}}>
-                <View style={{flexDirection: 'row', justifyContent: 'center', marginTop: 15}}>
-                    <View style={{height: 130, width: '100%', flexDirection: 'colum',}}>
-                        <View style={{flex: 1, flexDirection: 'colum'}}>
-                            <View style={{
-                                flex: 1,
-                                flexDirection: 'row',
-                                justifyContent: 'space-between',
-                                paddingRight: 20,
-                                paddingLeft: 20
-                            }}>
-                                {cards?.map((card, index) => (
-                                    <TouchableOpacity key={index} onPress={() => onSelectCardAndNum(index)}>
-                                        <View style={[styles.cardsContainer]}>
-                                            <Image
-                                                style={[StyleSheet.absoluteFill, styles.cardsImg]}
-                                                source={cardsImg[card.suit]}
-                                            />
-                                            <View style={[styles.cardsTextContainer]}>
-                                                <Text style={{fontSize: 16}}>{card.num}</Text>
+                <CustomHeaderReturn title='斗牛' isReturn={true}></CustomHeaderReturn>
+                <CustomSwitch
+                    text={cardsVisible ? "关闭辅助" : "开启辅助"}
+                    enabled={cardsVisible}
+                    onValueChange={(value) => setCardsVisible(value)}
+                />
+                {cardsVisible &&
+                    <View style={{flexDirection: 'row', justifyContent: 'center', marginBottom: 10}}>
+                        <View style={{height: 130, width: '100%', flexDirection: 'colum',}}>
+                            <View style={{flex: 1, flexDirection: 'colum'}}>
+                                <View style={{
+                                    flex: 1,
+                                    flexDirection: 'row',
+                                    justifyContent: 'space-between',
+                                    paddingRight: 20,
+                                    paddingLeft: 20
+                                }}>
+                                    {cards?.map((card, index) => (
+                                        <TouchableOpacity key={index} onPress={() => onSelectCardAndNum(index)}>
+                                            <View style={[styles.cardsContainer]}>
+                                                <Image
+                                                    style={[StyleSheet.absoluteFill, styles.cardsImg]}
+                                                    source={cardsImg[card.suit]}
+                                                />
+                                                <View style={[styles.cardsTextContainer]}>
+                                                    <Text style={{fontSize: 16}}>{card.num}</Text>
+                                                </View>
                                             </View>
-                                        </View>
-                                    </TouchableOpacity>
-                                ))}
-                            </View>
-                            <View style={{
-                                flexDirection: 'row',
-                                justifyContent: 'center',
-                                alignItems: 'center',
-                                marginBottom: 8
-                            }}>
-                                {niuResult == 0 && <Text>没</Text>}
-                                <Image style={{width: 20, height: 20}}
-                                       source={require('../../assets/niu.png')}/>
-                                {niuResult == 10 && <Image style={{width: 20, height: 20}}
-                                                           source={require('../../assets/niu.png')}/>}
-                                {niuResult > 0 && niuResult < 10 && <Text>{niuResult}</Text>}
+                                        </TouchableOpacity>
+                                    ))}
+                                </View>
+                                <View style={{
+                                    flexDirection: 'row',
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                    marginBottom: 8
+                                }}>
+                                    {niuResult == 0 && <Text>没</Text>}
+                                    <Image style={{width: 20, height: 20}}
+                                           source={require('../../assets/niu.png')}/>
+                                    {niuResult == 10 && <Image style={{width: 20, height: 20}}
+                                                               source={require('../../assets/niu.png')}/>}
+                                    {niuResult > 0 && niuResult < 10 && <Text>{niuResult}</Text>}
 
-                            </View>
-                            <View style={{
-                                flexDirection: 'colum',
-                                justifyContent: 'center',
-                                alignItems: 'center'
-                            }}>
-                                <View style={{width: 200}}>
-                                    <GradualButton radius={15} text='计算牛牛' onPress={onCalculateNiu}/>
+                                </View>
+                                <View style={{
+                                    flexDirection: 'colum',
+                                    justifyContent: 'center',
+                                    alignItems: 'center'
+                                }}>
+                                    <View style={{width: 200}}>
+                                        <GradualButton radius={15} text='计算牛牛' onPress={onCalculateNiu}/>
+                                    </View>
                                 </View>
                             </View>
                         </View>
                     </View>
-                </View>
+                }
                 <View style={[styles.userInfoListContainer]}>
-                    <View>
-                        <Text>房间号：10888</Text>
+                    <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+                        <View>
+                            <Text style={{color: theme.secondary, fontSize: 12}}>房间号：10888</Text>
+                            <Text style={{color: theme.minor, fontSize: 12}}>第2轮</Text>
+                        </View>
+                        <IconSelectMenu
+                            type="dots-three-horizontal"
+                            options={[{
+                                title: '退出房间', onPress: () => {
+                                }
+                            }]}/>
                     </View>
                     <View style={{flexDirection: 'row', height: 50, justifyContent: 'center', alignItems: 'center'}}>
                         <GradualButton
@@ -216,7 +235,7 @@ export default function Douniu() {
                             }}
                         />
                         <View style={{
-                            width: 40
+                            width: 40,
                         }}>
                             <TextInput
                                 style={{
@@ -251,7 +270,7 @@ export default function Douniu() {
                             text="准备"
                         />
                     </View>
-                    <ScrollView style={{height: '70%', width: '100%',}}>
+                    <ScrollView style={{width: '100%'}}>
                         <View>
                             {
                                 userInfos?.map(info => (
@@ -370,10 +389,11 @@ const styles = StyleSheet.create({
     },
     userInfoListContainer: {
         backgroundColor: '#efefef',
-        margin: 10,
-        marginTop: 20,
+        marginBottom: 10,
+        marginLeft: 10,
+        marginRight: 10,
         padding: 20,
-        height: '70%',
+        flex: 1,
         borderRadius: 20
     },
     userInfoContainer: {
