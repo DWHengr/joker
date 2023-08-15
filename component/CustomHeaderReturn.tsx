@@ -1,6 +1,7 @@
 import React from 'react';
 import {View, Text, TouchableOpacity, Image, StyleSheet} from 'react-native';
 import {useNavigation} from "@react-navigation/native";
+import {theme} from "../pages/common/Theme";
 
 interface CustomHeaderProps {
     title: string,
@@ -44,7 +45,8 @@ const styles = StyleSheet.create({
         height: 42,
         paddingLeft: 15,
         paddingRight: 15,
-        marginBottom: 2
+        marginBottom: 2,
+        backgroundColor: theme.containerBackgroundColor
     },
     title: {
         alignItems: 'center',
