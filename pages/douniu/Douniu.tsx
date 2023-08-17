@@ -333,7 +333,7 @@ export default function Douniu() {
                     visible={userOpeModalVisible}
                     onClose={() => setUserOpeModalVisible(false)}
                 >
-                    <View style={{flexDirection: 'row', alignItems: 'flex-start'}}>
+                    <View style={{flexDirection: 'row', alignItems: 'flex-start', flexWrap: 'wrap'}}>
                         <IconTextButton
                             style={{margin: 8}}
                             text='设置庄家'
@@ -356,6 +356,12 @@ export default function Douniu() {
                             style={{margin: 8}}
                             text='积分-1'
                             source={require('../../assets/decrease.png')}
+                            onPress={() => setUserOpeModalVisible(false)}
+                        />
+                        <IconTextButton
+                            style={{margin: 8}}
+                            text='请出房间'
+                            source={require('../../assets/leave.png')}
                             onPress={() => setUserOpeModalVisible(false)}
                         />
                     </View>
