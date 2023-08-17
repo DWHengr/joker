@@ -18,10 +18,10 @@ export default function Login() {
                 <View style={{flexDirection: 'row', justifyContent: 'center'}}>
                     <View style={[styles.optionContainer]}>
                         <Image style={[StyleSheet.absoluteFill, styles.optionImg]}
-                               source={require('../../assets/img.jpg')}/>
+                               source={require('../../assets/bg.png')}/>
                         <TouchableOpacity onPress={() => onNavigate('Douniu')}>
                             <View style={[styles.optionCard]}>
-                                <Text style={{fontSize: 30, color: '#efefef'}}>斗牛</Text>
+                                <Text style={{fontSize: 30, color: theme.primary}}>斗牛</Text>
                             </View>
                         </TouchableOpacity>
                     </View>
