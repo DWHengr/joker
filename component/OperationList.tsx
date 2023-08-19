@@ -6,21 +6,22 @@ export default function OperationList({operations}) {
     return (
         <View style={{flexDirection: 'column'}}>
             {operations?.map((item, index) =>
-                <TouchableOpacity onPress={() => {
-                    if (item.onPress) item.onPress();
-                }}>
-                    <View key={index}
-                          style={{
-                              ...styles.listItemContainer,
-                              ...(
-                                  index != operations.length - 1 ? {
-                                      borderBottomWidth: 1,
-                                      borderBottomColor: "#e8e8e8"
-                                  } : {}
-                              )
-                          }}>
+                <TouchableOpacity
+                    key={index}
+                    onPress={() => {
+                        if (item.onPress) item.onPress();
+                    }}>
+                    <View style={{
+                        ...styles.listItemContainer,
+                        ...(
+                            index != operations.length - 1 ? {
+                                borderBottomWidth: 1,
+                                borderBottomColor: "#e8e8e8"
+                            } : {}
+                        )
+                    }}>
                         <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
-                            <Image style={{width: 18, height: 18, marginRight: 4}} source={item.icon}/>
+                            <Image style={{width: 28, height: 28, marginRight: 5}} source={item.icon}/>
                             <Text style={{fontSize: 15, color: theme.primary}}>{item.title}</Text>
                         </View>
                         <View>
