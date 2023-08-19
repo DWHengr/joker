@@ -1,9 +1,10 @@
 import {Image, ScrollView, StyleSheet, Text, View} from 'react-native'
 import {theme} from "../common/Theme";
+import OperationList from "../../component/OperationList";
 
 export default function Mine() {
     return (
-        <View style={{alignItems: 'center', height: '100%'}}>
+        <View style={[styles.container]}>
             <View style={{width: '100%', height: 160}}>
                 <Image style={[styles.bgContainer]}
                        source={require('../../assets/bg2.png')}/>
@@ -23,8 +24,47 @@ export default function Mine() {
                 </View>
             </View>
             <View style={[styles.contentContainer]}>
-                <ScrollView style={{width: '100%'}}>
-                    <Text>Mine</Text>
+                <ScrollView style={{flexDirection: 'column', width: '100%'}}>
+                    <View style={{alignItems: 'center'}}>
+                        <View style={[styles.operationListContainer]}>
+                            <OperationList
+                                operations={[
+                                    {
+                                        title: "个人信息",
+                                        onPress: () => console.log(1),
+                                        icon: require('../../assets/personal.png'),
+                                    },
+                                    {
+                                        title: "我的记录",
+                                        onPress: () => console.log(1),
+                                        icon: require('../../assets/record.png'),
+                                    }
+                                ]}
+                            />
+                        </View>
+                        <View style={[styles.operationListContainer]}>
+                            <OperationList
+                                operations={[
+                                    {
+                                        title: "关于我们",
+                                        onPress: () => console.log(1),
+                                        icon: require('../../assets/aboutus.png'),
+                                    }
+                                ]}
+                            />
+                        </View>
+                        <View style={[styles.operationListContainer]}>
+                            <OperationList
+                                operations={[
+                                    {
+                                        title: "退出登录",
+                                        onPress: () => console.log(1),
+                                        icon: require('../../assets/logout.png'),
+                                    }
+                                ]}
+                            />
+                        </View>
+                    </View>
                 </ScrollView>
             </View>
         </View>
@@ -32,9 +72,11 @@ export default function Mine() {
 }
 
 const styles = StyleSheet.create({
-    contentContainer: {
-        margin: 10,
-        flex: 1
+    container: {
+        alignItems: 'center',
+        height: '100%',
+        flex: 1,
+        backgroundColor: '#ffffff'
     },
     bgContainer: {
         width: '100%',
@@ -55,5 +97,25 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.2,
         shadowRadius: 5,
         elevation: 5,
+    },
+    contentContainer: {
+        flex: 1,
+        width: '100%',
+        justifyContent: 'center',
+        marginTop: 10
+    },
+    operationListContainer: {
+        width: '90%',
+        backgroundColor: '#ffffff',
+        flexDirection: 'column',
+        shadowColor: theme.primary,
+        shadowOffset: {width: 0, height: 2},
+        shadowOpacity: 0.2,
+        shadowRadius: 5,
+        elevation: 5,
+        margin: 10,
+        borderRadius: 10,
+        paddingLeft: 10,
+        paddingRight: 10,
     }
 });
