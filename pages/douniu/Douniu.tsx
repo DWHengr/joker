@@ -1,4 +1,14 @@
-import {StyleSheet, ScrollView, Text, View, TouchableOpacity, Image, TextInput} from 'react-native'
+import {
+    StyleSheet,
+    ScrollView,
+    Text,
+    View,
+    TouchableOpacity,
+    Image,
+    TextInput,
+    Keyboard,
+    TouchableWithoutFeedback
+} from 'react-native'
 import {SafeAreaView} from "react-native-safe-area-context";
 import CustomHeaderReturn from "../../component/CustomHeaderReturn";
 import {theme} from "../common/Theme";
@@ -121,6 +131,11 @@ export default function Douniu() {
         setPokerVisible(true);
     }
 
+    const stringToNumber = (str) => {
+        const parsedNumber = parseInt(str, 10);
+        return isNaN(parsedNumber) ? 0 : parsedNumber;
+    }
+
     const onCalculateNiu = () => {
         const n = cards.length;
         let niu = 0;
@@ -143,231 +158,236 @@ export default function Douniu() {
         setNiuResult(niu)
     }
     return (
-        <SafeAreaView style={[styles.container]}>
-            <PokerSegmentPicker
-                visible={pokerVisible}
-                onCancel={() => setPokerVisible(false)}
-                onConfirm={(value) => {
-                    cards[currentSelectionCardIndex].suit = value.suit;
-                    cards[currentSelectionCardIndex].num = value.num;
-                    setCards(cards)
-                    setPokerVisible(false)
-                }}
-                defaultSelections={cards[currentSelectionCardIndex]}
-            />
-            <View style={{backgroundColor: '#ffffff', height: '100%'}}>
-                <CustomHeaderReturn title='斗牛' isReturn={true}></CustomHeaderReturn>
-                <CustomSwitch
-                    text={cardsVisible ? "关闭辅助" : "开启辅助"}
-                    enabled={cardsVisible}
-                    onValueChange={(value) => setCardsVisible(value)}
+        <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+            <SafeAreaView style={[styles.container]}>
+                <PokerSegmentPicker
+                    visible={pokerVisible}
+                    onCancel={() => setPokerVisible(false)}
+                    onConfirm={(value) => {
+                        cards[currentSelectionCardIndex].suit = value.suit;
+                        cards[currentSelectionCardIndex].num = value.num;
+                        setCards(cards)
+                        setPokerVisible(false)
+                    }}
+                    defaultSelections={cards[currentSelectionCardIndex]}
                 />
-                {cardsVisible &&
-                    <View style={{flexDirection: 'row', justifyContent: 'center', marginBottom: 10}}>
-                        <View style={{height: 130, width: '100%', flexDirection: 'colum',}}>
-                            <View style={{flex: 1, flexDirection: 'colum'}}>
-                                <View style={{
-                                    flex: 1,
-                                    flexDirection: 'row',
-                                    justifyContent: 'space-between',
-                                    paddingRight: 20,
-                                    paddingLeft: 20
-                                }}>
-                                    {cards?.map((card, index) => (
-                                        <TouchableOpacity key={index} onPress={() => onSelectCardAndNum(index)}>
-                                            <View style={[styles.cardsContainer]}>
-                                                <Image
-                                                    style={[StyleSheet.absoluteFill, styles.cardsImg]}
-                                                    source={cardsImg[card.suit]}
-                                                />
-                                                <View style={[styles.cardsTextContainer]}>
-                                                    <Text style={{fontSize: 16}}>{card.num}</Text>
+                <View style={{backgroundColor: '#ffffff', height: '100%'}}>
+                    <CustomHeaderReturn title='斗牛' isReturn={true}></CustomHeaderReturn>
+                    <CustomSwitch
+                        text={cardsVisible ? "关闭辅助" : "开启辅助"}
+                        enabled={cardsVisible}
+                        onValueChange={(value) => setCardsVisible(value)}
+                    />
+                    {cardsVisible &&
+                        <View style={{flexDirection: 'row', justifyContent: 'center', marginBottom: 10}}>
+                            <View style={{height: 130, width: '100%', flexDirection: 'colum',}}>
+                                <View style={{flex: 1, flexDirection: 'colum'}}>
+                                    <View style={{
+                                        flex: 1,
+                                        flexDirection: 'row',
+                                        justifyContent: 'space-between',
+                                        paddingRight: 20,
+                                        paddingLeft: 20
+                                    }}>
+                                        {cards?.map((card, index) => (
+                                            <TouchableOpacity key={index} onPress={() => onSelectCardAndNum(index)}>
+                                                <View style={[styles.cardsContainer]}>
+                                                    <Image
+                                                        style={[StyleSheet.absoluteFill, styles.cardsImg]}
+                                                        source={cardsImg[card.suit]}
+                                                    />
+                                                    <View style={[styles.cardsTextContainer]}>
+                                                        <Text style={{fontSize: 16}}>{card.num}</Text>
+                                                    </View>
                                                 </View>
-                                            </View>
-                                        </TouchableOpacity>
-                                    ))}
-                                </View>
-                                <View style={{
-                                    flexDirection: 'row',
-                                    justifyContent: 'center',
-                                    alignItems: 'center',
-                                    marginBottom: 8
-                                }}>
-                                    {niuResult == 0 && <Text>没</Text>}
-                                    <Image style={{width: 20, height: 20}}
-                                           source={require('../../assets/niu.png')}/>
-                                    {niuResult == 10 && <Image style={{width: 20, height: 20}}
-                                                               source={require('../../assets/niu.png')}/>}
-                                    {niuResult > 0 && niuResult < 10 && <Text>{niuResult}</Text>}
+                                            </TouchableOpacity>
+                                        ))}
+                                    </View>
+                                    <View style={{
+                                        flexDirection: 'row',
+                                        justifyContent: 'center',
+                                        alignItems: 'center',
+                                        marginBottom: 8
+                                    }}>
+                                        {niuResult == 0 && <Text>没</Text>}
+                                        <Image style={{width: 20, height: 20}}
+                                               source={require('../../assets/niu.png')}/>
+                                        {niuResult == 10 && <Image style={{width: 20, height: 20}}
+                                                                   source={require('../../assets/niu.png')}/>}
+                                        {niuResult > 0 && niuResult < 10 && <Text>{niuResult}</Text>}
 
-                                </View>
-                                <View style={{
-                                    flexDirection: 'colum',
-                                    justifyContent: 'center',
-                                    alignItems: 'center'
-                                }}>
-                                    <View style={{width: 200}}>
-                                        <GradualButton radius={15} text='计算牛牛' onPress={onCalculateNiu}/>
+                                    </View>
+                                    <View style={{
+                                        flexDirection: 'colum',
+                                        justifyContent: 'center',
+                                        alignItems: 'center'
+                                    }}>
+                                        <View style={{width: 200}}>
+                                            <GradualButton radius={15} text='计算牛牛' onPress={onCalculateNiu}/>
+                                        </View>
                                     </View>
                                 </View>
                             </View>
                         </View>
-                    </View>
-                }
-                <View style={[styles.userInfoListContainer]}>
-                    <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-                        <View>
-                            <Text style={{color: theme.secondary, fontSize: 12}}>房间号：10888</Text>
-                            <Text style={{color: theme.primary, fontSize: 12}}>第2轮</Text>
+                    }
+                    <View style={[styles.userInfoListContainer]}>
+                        <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+                            <View>
+                                <Text style={{color: theme.secondary, fontSize: 12}}>房间号：10888</Text>
+                                <Text style={{color: theme.primary, fontSize: 12}}>第2轮</Text>
+                            </View>
+                            <IconSelectMenu
+                                type="dots-three-horizontal"
+                                options={[{
+                                    title: '退出房间', onPress: () => {
+                                    }
+                                }]}/>
                         </View>
-                        <IconSelectMenu
-                            type="dots-three-horizontal"
-                            options={[{
-                                title: '退出房间', onPress: () => {
-                                }
-                            }]}/>
-                    </View>
-                    <View style={{flexDirection: 'row', height: 50, justifyContent: 'center', alignItems: 'center'}}>
-                        <GradualButton
-                            size='sm' buttonStyle={{width: 30, borderRadius: 5}} text="-"
-                            onPress={() => {
-                                setScoreResult((parseInt(scoreResult) - 1) + "")
-                            }}
-                        />
-                        <View style={{
-                            width: 40,
-                        }}>
-                            <TextInput
-                                style={{
-                                    color: theme.secondary,
-                                    borderRadius: 4,
-                                    paddingLeft: 2,
-                                    paddingRight: 2,
-                                    backgroundColor: theme.primary,
+                        <View
+                            style={{flexDirection: 'row', height: 50, justifyContent: 'center', alignItems: 'center'}}>
+                            <GradualButton
+                                size='sm' buttonStyle={{width: 30, borderRadius: 5}} text="-"
+                                onPress={() => {
+                                    setScoreResult((stringToNumber(scoreResult) - 1) + "")
                                 }}
-                                keyboardType="numeric"
-                                value={scoreResult}
-                                placeholder="得分"
-                                placeholderTextColor={theme.secondary}
-                                onChangeText={(text) => setScoreResult(text.replace(/[^-0-9]/g, ''))}
-                            ></TextInput>
+                            />
+                            <View style={{
+                                width: 40,
+                            }}>
+                                <TextInput
+                                    style={{
+                                        color: theme.secondary,
+                                        borderRadius: 4,
+                                        paddingLeft: 2,
+                                        paddingRight: 2,
+                                        backgroundColor: theme.primary,
+                                    }}
+                                    keyboardType="numeric"
+                                    value={scoreResult}
+                                    placeholder="得分"
+                                    placeholderTextColor={theme.secondary}
+                                    onChangeText={(text) => setScoreResult(text.replace(/[^-0-9]/g, ''))}
+                                ></TextInput>
+                            </View>
+                            <GradualButton
+                                size='sm' buttonStyle={{width: 30, borderRadius: 5}} isPros={true} text="+"
+                                onPress={
+                                    () => setScoreResult((stringToNumber(scoreResult) + 1) + "")
+                                }
+                            />
+                            <GradualButton
+                                size='sm'
+                                buttonStyle={{width: 90, borderRadius: 5, marginLeft: 2}}
+                                text="提交"
+                            />
+                            <GradualButton
+                                size='sm'
+                                buttonStyle={{width: 90, borderRadius: 5, marginLeft: 2}}
+                                isPros={true}
+                                text="准备"
+                            />
                         </View>
-                        <GradualButton
-                            size='sm' buttonStyle={{width: 30, borderRadius: 5}} isPros={true} text="+"
-                            onPress={
-                                () => setScoreResult((parseInt(scoreResult) + 1) + "")
-                            }
-                        />
-                        <GradualButton
-                            size='sm'
-                            buttonStyle={{width: 90, borderRadius: 5, marginLeft: 2}}
-                            text="提交"
-                        />
-                        <GradualButton
-                            size='sm'
-                            buttonStyle={{width: 90, borderRadius: 5, marginLeft: 2}}
-                            isPros={true}
-                            text="准备"
-                        />
-                    </View>
-                    <ScrollView style={{width: '100%'}}>
-                        <View>
-                            {
-                                userInfos?.map(info => (
-                                    <TouchableOpacity key={info.id} onLongPress={() => setUserOpeModalVisible(true)}>
-                                        <View style={[styles.userInfoContainer]}>
-                                            <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                                                <View style={{width: 50, height: 50, borderRadius: 10}}>
-                                                    <Image style={{width: 50, height: 50, borderRadius: 10}}
-                                                           source={{
-                                                               uri: 'http://pic.imeitou.com/uploads/allimg/211216/3-21121609215O03.jpg'
-                                                           }}>
-                                                    </Image>
-                                                </View>
-                                                <View style={{marginLeft: 6}}>
-                                                    <View style={{flexDirection: 'row'}}>
-                                                        <Text style={{color: theme.secondary}}>{info.name}</Text>
-                                                        {
-                                                            info.isOwner ? <Image
-                                                                style={{
-                                                                    height: 20,
-                                                                    width: 20
-                                                                }}
-                                                                source={require('../../assets/owner.png')}
-                                                            /> : <></>
-                                                        }
-                                                        {
-                                                            info.isDealers ? <Image
-                                                                style={{
-                                                                    height: 20,
-                                                                    width: 20
-                                                                }}
-                                                                source={require('../../assets/crown.png')}
-                                                            /> : <></>
-                                                        }
+                        <ScrollView showsVerticalScrollIndicator={false} style={{width: '100%'}}>
+                            <View>
+                                {
+                                    userInfos?.map(info => (
+                                        <TouchableOpacity key={info.id}
+                                                          activeOpacity={0.6}
+                                                          onLongPress={() => setUserOpeModalVisible(true)}>
+                                            <View style={[styles.userInfoContainer]}>
+                                                <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                                                    <View style={{width: 50, height: 50, borderRadius: 10}}>
+                                                        <Image style={{width: 50, height: 50, borderRadius: 10}}
+                                                               source={{
+                                                                   uri: 'http://pic.imeitou.com/uploads/allimg/211216/3-21121609215O03.jpg'
+                                                               }}>
+                                                        </Image>
                                                     </View>
-                                                    <Text style={{
-                                                        fontSize: 16,
-                                                        marginTop: 5,
-                                                        color: info.score > 0 ? '#63ad4f' : theme.primary,
-                                                        fontWeight: 600
-                                                    }}>{info.score}</Text>
+                                                    <View style={{marginLeft: 6}}>
+                                                        <View style={{flexDirection: 'row'}}>
+                                                            <Text style={{color: theme.secondary}}>{info.name}</Text>
+                                                            {
+                                                                info.isOwner ? <Image
+                                                                    style={{
+                                                                        height: 20,
+                                                                        width: 20
+                                                                    }}
+                                                                    source={require('../../assets/owner.png')}
+                                                                /> : <></>
+                                                            }
+                                                            {
+                                                                info.isDealers ? <Image
+                                                                    style={{
+                                                                        height: 20,
+                                                                        width: 20
+                                                                    }}
+                                                                    source={require('../../assets/crown.png')}
+                                                                /> : <></>
+                                                            }
+                                                        </View>
+                                                        <Text style={{
+                                                            fontSize: 16,
+                                                            marginTop: 5,
+                                                            color: info.score > 0 ? '#63ad4f' : theme.primary,
+                                                            fontWeight: 600
+                                                        }}>{info.score}</Text>
+                                                    </View>
                                                 </View>
+                                                <View
+                                                    style={{
+                                                        width: 100,
+                                                        alignItems: 'center'
+                                                    }}><Text>{info.status}</Text></View>
                                             </View>
-                                            <View
-                                                style={{
-                                                    width: 100,
-                                                    alignItems: 'center'
-                                                }}><Text>{info.status}</Text></View>
-                                        </View>
-                                    </TouchableOpacity>
-                                ))
-                            }
-                        </View>
-                    </ScrollView>
-                </View>
-            </View>
-            <View>
-                <BottomModal
-                    title="成员操作"
-                    visible={userOpeModalVisible}
-                    onClose={() => setUserOpeModalVisible(false)}
-                >
-                    <View style={{flexDirection: 'row', alignItems: 'flex-start', flexWrap: 'wrap'}}>
-                        <IconTextButton
-                            style={{margin: 8}}
-                            text='设置庄家'
-                            source={require('../../assets/crown.png')}
-                            onPress={() => setUserOpeModalVisible(false)}
-                        />
-                        <IconTextButton
-                            style={{margin: 8}}
-                            text='转让房主'
-                            source={require('../../assets/owner.png')}
-                            onPress={() => setUserOpeModalVisible(false)}
-                        />
-                        <IconTextButton
-                            style={{margin: 8}}
-                            text='积分+1'
-                            source={require('../../assets/increase.png')}
-                            onPress={() => setUserOpeModalVisible(false)}
-                        />
-                        <IconTextButton
-                            style={{margin: 8}}
-                            text='积分-1'
-                            source={require('../../assets/decrease.png')}
-                            onPress={() => setUserOpeModalVisible(false)}
-                        />
-                        <IconTextButton
-                            style={{margin: 8}}
-                            text='请出房间'
-                            source={require('../../assets/leave.png')}
-                            onPress={() => setUserOpeModalVisible(false)}
-                        />
+                                        </TouchableOpacity>
+                                    ))
+                                }
+                            </View>
+                        </ScrollView>
                     </View>
-                </BottomModal>
-            </View>
-        </SafeAreaView>
+                </View>
+                <View>
+                    <BottomModal
+                        title="成员操作"
+                        visible={userOpeModalVisible}
+                        onClose={() => setUserOpeModalVisible(false)}
+                    >
+                        <View style={{flexDirection: 'row', alignItems: 'flex-start', flexWrap: 'wrap'}}>
+                            <IconTextButton
+                                style={{margin: 8}}
+                                text='设置庄家'
+                                source={require('../../assets/crown.png')}
+                                onPress={() => setUserOpeModalVisible(false)}
+                            />
+                            <IconTextButton
+                                style={{margin: 8}}
+                                text='转让房主'
+                                source={require('../../assets/owner.png')}
+                                onPress={() => setUserOpeModalVisible(false)}
+                            />
+                            <IconTextButton
+                                style={{margin: 8}}
+                                text='积分+1'
+                                source={require('../../assets/increase.png')}
+                                onPress={() => setUserOpeModalVisible(false)}
+                            />
+                            <IconTextButton
+                                style={{margin: 8}}
+                                text='积分-1'
+                                source={require('../../assets/decrease.png')}
+                                onPress={() => setUserOpeModalVisible(false)}
+                            />
+                            <IconTextButton
+                                style={{margin: 8}}
+                                text='请出房间'
+                                source={require('../../assets/leave.png')}
+                                onPress={() => setUserOpeModalVisible(false)}
+                            />
+                        </View>
+                    </BottomModal>
+                </View>
+            </SafeAreaView>
+        </TouchableWithoutFeedback>
     )
 }
 
