@@ -8,6 +8,9 @@ import {theme} from "../common/Theme";
 import GradualButton from "../../component/GradualButton";
 import {Ionicons, AntDesign} from '@expo/vector-icons';
 import {useState} from "react";
+import {login} from "../../api/user";
+import {toastError} from "../../utils/toast";
+import {setToken} from "../../storage/user";
 
 export default function Login() {
 
@@ -17,7 +20,25 @@ export default function Login() {
     const [isShowPassword, setIsShowPassword] = useState(false)
 
     const onLogin = () => {
-        navigation.navigate("Tab")
+        if (!username) {
+            toastError("用户名不能为空");
+            return;
+        }
+        if (!password) {
+            toastError("密码不能为空");
+            return;
+        }
+        login({account: username, password}).then(res => {
+            if (res.data.code == 0) {
+                setToken(res.data.data.token);
+                navigation.reset({
+                    index: 0,
+                    routes: [{name: 'Tab'}],
+                })
+            } else {
+                toastError(res.data.msg);
+            }
+        })
     }
 
     return (
@@ -97,6 +118,7 @@ export default function Login() {
                             </View>
                             <View style={{width: '70%', margin: 20}}>
                                 <GradualButton
+                                    disabled={username && password ? false : true}
                                     size='lg'
                                     buttonStyle={{
                                         borderRadius: 20,
