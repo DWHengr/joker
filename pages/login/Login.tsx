@@ -10,7 +10,7 @@ import {Ionicons, AntDesign} from '@expo/vector-icons';
 import {useState} from "react";
 import {login} from "../../api/user";
 import {toastError} from "../../utils/toast";
-import {setToken} from "../../storage/user";
+import {setToken, setUserId, setUserInfo} from "../../storage/user";
 
 export default function Login() {
 
@@ -31,6 +31,7 @@ export default function Login() {
         login({account: username, password}).then(res => {
             if (res.data.code == 0) {
                 setToken(res.data.data.token);
+                setUserId(res.data.data.userid);
                 navigation.reset({
                     index: 0,
                     routes: [{name: 'Tab'}],
