@@ -12,14 +12,16 @@ import {
 import {SafeAreaView} from "react-native-safe-area-context";
 import CustomHeaderReturn from "../../component/CustomHeaderReturn";
 import {theme} from "../common/Theme";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import PokerSegmentPicker from "../../component/PokerSegmentPicker";
 import GradualButton from "../../component/GradualButton";
 import BottomModal from "../../component/BottomModal";
 import IconTextButton from "../../component/IconTextButton";
 import CustomSwitch from "../../component/CustomSwitch";
 import IconSelectMenu from "../../component/IconSelectMenu";
-
+import {userRoomInfo} from "../../api/userRoom";
+import {getUserPortrait} from "../../api/user";
+import {getToken} from "../../storage/user";
 
 const cardsImg =
     {
@@ -33,87 +35,19 @@ const CardValues = {
     'A': 1, '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9, '10': 10, 'J': 10, 'Q': 10, 'K': 10
 };
 
-const userInfos = [
-    {
-        id: '1',
-        name: 'Heath',
-        score: 100,
-        portrait: '',
-        status: '正在结算中...',
-        isDealers: true,
-        isOwner: true,
-    },
-    {
-        id: '2',
-        name: 'Heath2',
-        score: 100,
-        portrait: '',
-        status: '牛2',
-        isDealers: false,
-        isOwner: false,
-    },
-    {
-        id: '3',
-        name: 'Heath3',
-        score: -20,
-        portrait: '',
-        status: '正在结算中...',
-        isDealers: false,
-        isOwner: false,
-    },
-    {
-        id: '4',
-        name: 'Heath4',
-        score: 100,
-        portrait: '',
-        status: '没牛',
-        isDealers: false,
-        isOwner: false,
-    },
-    {
-        id: '5',
-        name: 'Heath5',
-        score: 100,
-        portrait: '',
-        status: '正在结算中...',
-        isDealers: false,
-        isOwner: false,
-    },
-    {
-        id: '6',
-        name: 'Heath6',
-        score: 100,
-        portrait: '',
-        status: '正在结算中...',
-        isDealers: false,
-        isOwner: false,
-    },
-    {
-        id: '7',
-        name: 'Heath7',
-        score: 100,
-        portrait: '',
-        status: '正在结算中...',
-        isDealers: false,
-        isOwner: false,
-    },
-    {
-        id: '8',
-        name: 'Heath8',
-        score: 100,
-        portrait: '',
-        status: '正在结算中...',
-        isDealers: false,
-        isOwner: false,
-    },
-];
-
-
 export default function Douniu() {
     const [pokerVisible, setPokerVisible] = useState(false);
     const [currentSelectionCardIndex, setCurrentSelectionCardIndex] = useState(0);
     const [niuResult, setNiuResult] = useState(-1);
     const [scoreResult, setScoreResult] = useState("0");
+    const [userInfos, setUserInfos] = useState([]);
+    const [roomInfo, serRoomInfo] = useState({number: "", round: "", id: ""});
+    const [portraitCache, serPortraitCache] = useState({});
+
+    let reconnectAttempts = 0;
+    const maxReconnectAttempts = 5;
+    const reconnectInterval = 5000;
+
     const [cards, setCards] = useState([
         {num: "A", suit: "heart"},
         {num: "K", suit: "club"},
@@ -121,6 +55,44 @@ export default function Douniu() {
         {num: "Q", suit: "spade"},
         {num: "8", suit: "heart"},
     ])
+
+    const onWb = async () => {
+        if (reconnectAttempts < maxReconnectAttempts) {
+            let token;
+            await getToken().then(res =>
+                token = res
+            )
+            if (!token)
+                return
+            const ws = new WebSocket(`ws://114.67.242.151:18088/ws/room/${token}`);
+            ws.onopen = () => {
+                ws.send('open');
+                reconnectAttempts = 0;
+            };
+            ws.onmessage = res => {
+                let parse = JSON.parse(res.data);
+                serRoomInfo(parse.room)
+                setUserInfos(parse.userRooms)
+            };
+            ws.onclose = e => {
+                console.log("连接失败:", e.code, e.reason);
+                if (e.code != "1000") {
+                    reconnectAttempts++;
+                    setTimeout(onWb, reconnectInterval);
+                }
+            };
+        }
+    }
+
+    useEffect(() => {
+        userRoomInfo().then(res => {
+            if (res.data.code == 0) {
+                setUserInfos(res.data.data.userRooms)
+                serRoomInfo(res.data.data.room)
+                onWb(res.data.data.room);
+            }
+        })
+    }, [])
 
     const [userOpeModalVisible, setUserOpeModalVisible] = useState(false);
     const [cardsVisible, setCardsVisible] = useState(false);
@@ -157,6 +129,19 @@ export default function Douniu() {
         }
         setNiuResult(niu)
     }
+
+    const getUserPortraitUrl = (userid) => {
+        getUserPortrait({userid}).then(res => {
+            if (res.data.code == 0) {
+                let url = res.data.data
+                serPortraitCache((prev) => ({
+                    ...prev,
+                    [userid]: url,
+                }))
+            }
+        })
+    }
+
     return (
         <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
             <SafeAreaView style={[styles.container]}>
@@ -233,8 +218,8 @@ export default function Douniu() {
                     <View style={[styles.userInfoListContainer]}>
                         <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
                             <View>
-                                <Text style={{color: theme.secondary, fontSize: 12}}>房间号：10888</Text>
-                                <Text style={{color: theme.primary, fontSize: 12}}>第2轮</Text>
+                                <Text style={{color: theme.secondary, fontSize: 12}}>房间号：{roomInfo.number}</Text>
+                                <Text style={{color: theme.primary, fontSize: 12}}>第{roomInfo.round}轮</Text>
                             </View>
                             <IconSelectMenu
                                 type="dots-three-horizontal"
@@ -299,13 +284,14 @@ export default function Douniu() {
                                                     <View style={{width: 50, height: 50, borderRadius: 10}}>
                                                         <Image style={{width: 50, height: 50, borderRadius: 10}}
                                                                source={{
-                                                                   uri: 'http://pic.imeitou.com/uploads/allimg/211216/3-21121609215O03.jpg'
+                                                                   uri: portraitCache[info.userId] ? portraitCache[info.userId] : getUserPortraitUrl(info.userId)
                                                                }}>
                                                         </Image>
                                                     </View>
                                                     <View style={{marginLeft: 6}}>
                                                         <View style={{flexDirection: 'row'}}>
-                                                            <Text style={{color: theme.secondary}}>{info.name}</Text>
+                                                            <Text
+                                                                style={{color: theme.secondary}}>{info.username}</Text>
                                                             {
                                                                 info.isOwner ? <Image
                                                                     style={{
