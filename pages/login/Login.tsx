@@ -6,11 +6,11 @@ import {RootStackParamList} from "../Main";
 import {LinearGradient} from "expo-linear-gradient";
 import {theme} from "../common/Theme";
 import GradualButton from "../../component/GradualButton";
-import {Ionicons, AntDesign} from '@expo/vector-icons';
 import {useState} from "react";
 import {login} from "../../api/user";
 import {toastError} from "../../utils/toast";
 import {setToken, setUserId, setUserInfo} from "../../storage/user";
+import CustomTextInput from "../../component/CustomTextInput";
 
 export default function Login() {
 
@@ -65,55 +65,18 @@ export default function Login() {
                     <View style={[styles.loginContainer]}>
                         <View style={{width: '100%', alignItems: 'center'}}>
                             <View style={{width: '90%'}}>
-                                <TouchableWithoutFeedback>
-                                    <View style={[styles.loginTextInputBox]}>
-                                        <TextInput
-                                            style={[styles.loginTextInput]}
-                                            placeholder="手机号或邮箱"
-                                            placeholderTextColor="#b2b2b2"
-                                            value={username}
-                                            onChangeText={(value) => setUsername(value)}
-                                        />
-                                        {username &&
-                                            <AntDesign
-                                                style={{marginLeft: 4, marginRight: 4}}
-                                                onPress={() => setUsername("")}
-                                                name="closecircle" size={16}
-                                                color="#b2b2b2"
-                                            />
-                                        }
-                                    </View>
-                                </TouchableWithoutFeedback>
-                                <View style={[styles.loginTextInputBox]}>
-                                    <TextInput
-                                        style={[styles.loginTextInput]}
-                                        secureTextEntry={!isShowPassword}
-                                        placeholder="密码"
-                                        placeholderTextColor="#b2b2b2"
-                                        value={password}
-                                        onChangeText={(value) => setPassword(value)}
-                                    />
-                                    {password &&
-                                        <AntDesign
-                                            style={{marginLeft: 4, marginRight: 4}}
-                                            onPress={() => setPassword("")}
-                                            name="closecircle" size={16}
-                                            color="#b2b2b2"
-                                        />
-                                    }
-                                    {isShowPassword ?
-                                        <Ionicons
-                                            onPress={() => setIsShowPassword(false)}
-                                            style={{marginLeft: 4, marginRight: 4}}
-                                            name="md-eye-outline" size={20}
-                                            color="#b2b2b2"/> :
-                                        <Ionicons
-                                            onPress={() => setIsShowPassword(true)}
-                                            style={{marginLeft: 4, marginRight: 4}}
-                                            name="md-eye-off-outline" size={20}
-                                            color="#b2b2b2"/>
-                                    }
-                                </View>
+                                <CustomTextInput
+                                    placeholder="手机号或邮箱"
+                                    value={username}
+                                    onChangeText={(value) => setUsername(value)}
+                                />
+                                <CustomTextInput
+                                    placeholder="密码"
+                                    isShowPassword={isShowPassword}
+                                    type="password"
+                                    value={password}
+                                    onChangeText={(value) => setPassword(value)}
+                                />
                                 <View style={{flexDirection: 'row', justifyContent: 'flex-end', marginTop: 5}}><Text
                                     style={{color: theme.secondary}}>忘记密码?</Text></View>
                             </View>
