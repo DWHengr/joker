@@ -6,6 +6,7 @@ import Douniu from "./douniu/Douniu";
 import {View} from "react-native";
 import Toast from "react-native-toast-message";
 import {toastConfig} from "../utils/toast";
+import CreateRoom from "./createRoom/CreateRoom";
 
 export type RootStackParamList = {
     Login: undefined,
@@ -46,6 +47,11 @@ export default function Main() {
                 < Stack.Screen
                     name="Douniu"
                     component={Douniu}
+                    options={{headerShown: false}}
+                ></Stack.Screen>
+                < Stack.Screen
+                    name="CreateRoom"
+                    component={CreateRoom}
                     options={{headerShown: false}}
                 ></Stack.Screen>
             </Stack.Navigator>
