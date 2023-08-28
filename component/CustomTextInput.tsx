@@ -1,13 +1,14 @@
-import {StyleSheet, TextInput, View} from "react-native";
+import {StyleSheet, TextInput, Text, View} from "react-native";
 import {AntDesign, Ionicons} from "@expo/vector-icons";
 import {theme} from "../pages/common/Theme";
 import {useState} from "react";
 
-export default function CustomTextInput({placeholder, value, onChangeText, type = 'text'}) {
+export default function CustomTextInput({placeholder, value, onChangeText, type = 'text', limit = 0}) {
     const [isShowPassword, setIsShowPassword] = useState(true);
     return (
         <View style={[styles.textInputBox]}>
             <TextInput
+                maxLength={limit == 0 ? 100 : limit}
                 style={[styles.textInput]}
                 placeholder={placeholder}
                 secureTextEntry={type == 'password'}
@@ -18,6 +19,10 @@ export default function CustomTextInput({placeholder, value, onChangeText, type 
                         onChangeText(value);
                 }}
             />
+            {limit != 0 && <View>
+                <Text style={{color: value.length >= limit ? '#ff7171' : theme.secondary}}>{value.length}/{limit}</Text>
+            </View>
+            }
             {value &&
                 <AntDesign
                     style={{marginLeft: 4, marginRight: 4}}

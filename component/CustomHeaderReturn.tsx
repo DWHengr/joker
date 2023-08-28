@@ -1,18 +1,34 @@
 import React from 'react';
 import {View, Text, TouchableOpacity, Image, StyleSheet} from 'react-native';
-import {useNavigation} from "@react-navigation/native";
+import {CommonActions, useNavigation} from "@react-navigation/native";
 import {theme} from "../pages/common/Theme";
 
 interface CustomHeaderProps {
     title: string,
-    isReturn: boolean
+    isReturn: boolean,
+    returnPage: string
 }
 
-const CustomHeaderReturn = ({title, isReturn}: CustomHeaderProps) => {
+const CustomHeaderReturn = ({title, isReturn, returnPage = ''}: CustomHeaderProps) => {
     const navigation = useNavigation();
 
+    const backAction = (returnPage) => {
+        navigation.dispatch(
+            CommonActions.reset({
+                index: 1,
+                routes: [
+                    {name: returnPage},
+                ],
+            })
+        );
+    };
+
     const handleGoBack = () => {
-        navigation.goBack();
+        if (returnPage) {
+            backAction(returnPage)
+        } else {
+            navigation.goBack();
+        }
     };
 
     return (
