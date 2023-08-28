@@ -2,7 +2,7 @@ import {createNativeStackNavigator} from "@react-navigation/native-stack";
 import Login from "./login/Login";
 import Home from "./home/Home";
 import Tab from "./tab/Tab";
-import Douniu from "./douniu/Douniu";
+import Room from "./room/Room";
 import {View} from "react-native";
 import Toast from "react-native-toast-message";
 import {toastConfig} from "../utils/toast";
@@ -45,8 +45,8 @@ export default function Main() {
                     options={{headerShown: false}}
                 ></Stack.Screen>
                 < Stack.Screen
-                    name="Douniu"
-                    component={Douniu}
+                    name="Room"
+                    component={Room}
                     options={{headerShown: false}}
                 ></Stack.Screen>
                 < Stack.Screen

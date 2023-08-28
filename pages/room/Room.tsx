@@ -7,7 +7,7 @@ import {
     Image,
     TextInput,
     Keyboard,
-    TouchableWithoutFeedback
+    TouchableWithoutFeedback, BackHandler
 } from 'react-native'
 import {SafeAreaView} from "react-native-safe-area-context";
 import CustomHeaderReturn from "../../component/CustomHeaderReturn";
@@ -21,7 +21,8 @@ import CustomSwitch from "../../component/CustomSwitch";
 import IconSelectMenu from "../../component/IconSelectMenu";
 import {userRoomInfo} from "../../api/userRoom";
 import {getUserPortrait} from "../../api/user";
-import {getToken} from "../../storage/user";
+import {getWsToken, removeRoomInfo} from "../../storage/user";
+import {CommonActions, useNavigation} from "@react-navigation/native";
 
 const cardsImg =
     {
@@ -35,18 +36,20 @@ const CardValues = {
     'A': 1, '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9, '10': 10, 'J': 10, 'Q': 10, 'K': 10
 };
 
-export default function Douniu() {
+export default function Room() {
     const [pokerVisible, setPokerVisible] = useState(false);
     const [currentSelectionCardIndex, setCurrentSelectionCardIndex] = useState(0);
     const [niuResult, setNiuResult] = useState(-1);
     const [scoreResult, setScoreResult] = useState("0");
     const [userInfos, setUserInfos] = useState([]);
-    const [roomInfo, serRoomInfo] = useState({number: "", round: "", id: ""});
+    const [roomInfo, serRoomInfo] = useState({number: "", round: "", id: "", name: ""});
     const [portraitCache, serPortraitCache] = useState({});
+    const navigation = useNavigation();
 
     let reconnectAttempts = 0;
-    const maxReconnectAttempts = 5;
-    const reconnectInterval = 5000;
+    const maxReconnectAttempts = 10;
+    const reconnectInterval = 6000;
+    let ws = null;
 
     const [cards, setCards] = useState([
         {num: "A", suit: "heart"},
@@ -59,12 +62,12 @@ export default function Douniu() {
     const onWb = async () => {
         if (reconnectAttempts < maxReconnectAttempts) {
             let token;
-            await getToken().then(res =>
+            await getWsToken().then(res =>
                 token = res
             )
             if (!token)
                 return
-            const ws = new WebSocket(`ws://114.67.242.151:18088/ws/room/${token}`);
+            ws = new WebSocket(`ws://114.67.242.151:18088/ws/room/${token}`);
             ws.onopen = () => {
                 ws.send('open');
                 reconnectAttempts = 0;
@@ -77,12 +80,30 @@ export default function Douniu() {
             ws.onclose = e => {
                 console.log("连接失败:", e.code, e.reason);
                 if (e.code != "1000") {
+                    ws = null;
                     reconnectAttempts++;
                     setTimeout(onWb, reconnectInterval);
                 }
             };
         }
     }
+
+    const backAction = () => {
+        navigation.reset({
+            index: 0,
+            routes: [
+                {name: 'Tab'},
+            ],
+        })
+        return true;
+    };
+
+    useEffect(() => {
+        const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
+        return () => {
+            backHandler.remove();
+        }
+    }, [])
 
     useEffect(() => {
         userRoomInfo().then(res => {
@@ -92,6 +113,9 @@ export default function Douniu() {
                 onWb(res.data.data.room);
             }
         })
+        return () => {
+            if (ws) ws.close();
+        }
     }, [])
 
     const [userOpeModalVisible, setUserOpeModalVisible] = useState(false);
@@ -157,7 +181,7 @@ export default function Douniu() {
                     defaultSelections={cards[currentSelectionCardIndex]}
                 />
                 <View style={{backgroundColor: '#ffffff', height: '100%'}}>
-                    <CustomHeaderReturn title='斗牛' isReturn={true}></CustomHeaderReturn>
+                    <CustomHeaderReturn title={roomInfo.name} isReturn={true} returnPage="Tab"></CustomHeaderReturn>
                     <CustomSwitch
                         text={cardsVisible ? "关闭辅助" : "开启辅助"}
                         enabled={cardsVisible}
@@ -225,6 +249,8 @@ export default function Douniu() {
                                 type="dots-three-horizontal"
                                 options={[{
                                     title: '退出房间', onPress: () => {
+                                        removeRoomInfo();
+                                        backAction();
                                     }
                                 }]}/>
                         </View>
@@ -293,7 +319,7 @@ export default function Douniu() {
                                                             <Text
                                                                 style={{color: theme.secondary}}>{info.username}</Text>
                                                             {
-                                                                info.isOwner ? <Image
+                                                                info.isOwner == 1 ? <Image
                                                                     style={{
                                                                         height: 20,
                                                                         width: 20
@@ -302,7 +328,7 @@ export default function Douniu() {
                                                                 /> : <></>
                                                             }
                                                             {
-                                                                info.isDealers ? <Image
+                                                                info.isDealers == 1 ? <Image
                                                                     style={{
                                                                         height: 20,
                                                                         width: 20
