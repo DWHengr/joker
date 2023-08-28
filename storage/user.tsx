@@ -21,6 +21,12 @@ export function setCreatedRoomInfo(data) {
     setRoomId(data.roomId);
 }
 
+export function removeRoomInfo() {
+    removeValue(wsToken).then();
+    removeValue(roomNumber).then();
+    removeValue(roomId).then();
+}
+
 
 export async function getToken() {
     return await getStringValue(token)

@@ -6,11 +6,30 @@ import CustomTextInput from "../../component/CustomTextInput";
 import {useState} from "react";
 import CustomCheckBox from "../../component/CustomCheckBox";
 import GradualButton from "../../component/GradualButton";
+import {createRoom} from "../../api/room";
+import {setCreatedRoomInfo} from "../../storage/user";
+import {useNavigation} from "@react-navigation/native";
 
 export default function CreateRoom() {
     const [roomName, setRoomName] = useState("");
     const [roomPassword, setRoomPassword] = useState("");
-    const [roomType, setRoomType] = useState("douniu");
+    const [roomType, setRoomType] = useState("room");
+
+    const navigation = useNavigation();
+
+    const onNavigate = (page: string) => {
+        navigation.navigate(page);
+    };
+
+    const onCreateRoom = () => {
+        createRoom({roomName, roomPassword, roomType}).then(res => {
+            if (res.data.code == 0) {
+                setCreatedRoomInfo(res.data.data)
+                onNavigate("Room")
+            }
+        })
+    }
+
     return (
         <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
             <SafeAreaView style={[styles.container]}>
@@ -22,6 +41,7 @@ export default function CreateRoom() {
                             <CustomTextInput
                                 value={roomName}
                                 onChangeText={(value) => setRoomName(value)}
+                                limit={10}
                                 placeholder="名称"
                             />
                         </View>
@@ -29,6 +49,7 @@ export default function CreateRoom() {
                             <Text style={[styles.textLabel]}>房间密码：</Text>
                             <CustomTextInput
                                 value={roomPassword}
+                                limit={16}
                                 onChangeText={(value) => setRoomPassword(value)}
                                 placeholder="密码"
                             />
@@ -39,7 +60,7 @@ export default function CreateRoom() {
                                 <CustomCheckBox
                                     value={roomType}
                                     checks={[
-                                        {key: '斗牛', value: 'douniu'},
+                                        {key: '斗牛', value: 'room'},
                                         {key: '其他', value: 'other'}
                                     ]}
                                     onChecked={(value) => {
@@ -56,12 +77,10 @@ export default function CreateRoom() {
                                     borderRadius: 20,
                                 }}
                                 text='创建房间'
-                                onPress={() => {
-                                }}
+                                onPress={onCreateRoom}
                             />
                         </View>
                     </View>
-
                 </View>
             </SafeAreaView>
         </TouchableWithoutFeedback>
