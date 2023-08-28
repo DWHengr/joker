@@ -1,33 +1,106 @@
-import {ScrollView, StyleSheet, View, Text, Image, TouchableOpacity} from 'react-native'
+import {
+    ScrollView,
+    StyleSheet,
+    View,
+    Text,
+    Image,
+    TouchableOpacity,
+    BackHandler,
+    TouchableWithoutFeedback
+} from 'react-native'
 import {SafeAreaView} from "react-native-safe-area-context";
 import CustomHeaderReturn from "../../component/CustomHeaderReturn";
 import {theme} from "../common/Theme";
-import {useNavigation} from "@react-navigation/native";
+import {useFocusEffect, useNavigation} from "@react-navigation/native";
+import {useCallback, useEffect, useState} from "react";
+import {toastInfo} from "../../utils/toast";
+import {getRoomNumber} from "../../storage/user";
 
-export default function Login() {
+export default function Home() {
 
     const navigation = useNavigation();
+    const [roomNumber, setRoomNumber] = useState("");
+    let backClickCount = 0;
 
     const onNavigate = (page: string) => {
         navigation.navigate(page);
     };
+
+    const handleBackPress = () => {
+        console.log(backClickCount)
+        if (backClickCount < 1) {
+            backClickCount++;
+            toastInfo("再按一次退出")
+            return true;
+        }
+        BackHandler.exitApp();
+        return false;
+    };
+
+    useFocusEffect(
+        useCallback(() => {
+            const backHandler = BackHandler.addEventListener('hardwareBackPress', handleBackPress);
+            return () => {
+                backHandler.remove();
+            };
+        }, [])
+    );
+
+    useEffect(() => {
+        getRoomNumber().then(res => {
+            setRoomNumber(res);
+        })
+    }, []);
+
     return (
-        <SafeAreaView style={[styles.container]}>
-            <CustomHeaderReturn title='首页' isReturn={false}></CustomHeaderReturn>
-            <ScrollView style={{backgroundColor: '#ffffff'}}>
-                <View style={{flexDirection: 'row', justifyContent: 'center'}}>
-                    <View style={[styles.optionContainer]}>
-                        <Image style={[StyleSheet.absoluteFill, styles.optionImg]}
-                               source={require('../../assets/bg.png')}/>
-                        <TouchableOpacity onPress={() => onNavigate('Douniu')}>
-                            <View style={[styles.optionCard]}>
-                                <Text style={{fontSize: 30, color: theme.primary}}>斗牛</Text>
+        <TouchableWithoutFeedback onPress={() => backClickCount = 0}>
+            <SafeAreaView style={[styles.container]}>
+                <CustomHeaderReturn title='首页' isReturn={false}></CustomHeaderReturn>
+                <ScrollView style={{backgroundColor: '#ffffff'}}>
+                    {roomNumber ?
+                        <View style={{flexDirection: 'row', justifyContent: 'center'}}>
+                            <View style={[styles.optionContainer]}>
+                                <Image style={[StyleSheet.absoluteFill, styles.optionImg]}
+                                       source={require('../../assets/bg.png')}/>
+                                <TouchableOpacity onPress={() => onNavigate('Room')}>
+                                    <View style={[styles.optionCard]}>
+                                        <Text style={[styles.titleText]}>进入房间</Text>
+                                        <View style={[styles.roomTitleText]}>
+                                            <Text
+                                                style={{color: '#f1f1f1', fontSize: 12,}}>房间号: {roomNumber}</Text>
+                                        </View>
+                                    </View>
+                                </TouchableOpacity>
                             </View>
-                        </TouchableOpacity>
-                    </View>
-                </View>
-            </ScrollView>
-        </SafeAreaView>
+                        </View> :
+                        <View>
+                            <View style={{flexDirection: 'row', justifyContent: 'center'}}>
+                                <View style={[styles.optionContainer]}>
+                                    <Image style={[StyleSheet.absoluteFill, styles.optionImg]}
+                                           source={require('../../assets/bg.png')}/>
+                                    <TouchableOpacity onPress={() => onNavigate('CreateRoom')}>
+                                        <View style={[styles.optionCard]}>
+                                            <Text style={[styles.titleText]}>创建房间</Text>
+                                        </View>
+                                    </TouchableOpacity>
+                                </View>
+                            </View>
+                            <View style={{flexDirection: 'row', justifyContent: 'center'}}>
+                                <View style={[styles.optionContainer]}>
+                                    <Image style={[StyleSheet.absoluteFill, styles.optionImg]}
+                                           source={require('../../assets/bg.png')}/>
+                                    <TouchableOpacity onPress={() => onNavigate('CreateRoom')}>
+                                        <View style={[styles.optionCard]}>
+                                            <Text style={[styles.titleText]}>加入房间</Text>
+                                        </View>
+                                    </TouchableOpacity>
+                                </View>
+                            </View>
+                        </View>
+                    }
+                </ScrollView>
+            </SafeAreaView>
+        </TouchableWithoutFeedback>
     )
 }
 
@@ -54,5 +127,24 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center'
+    },
+    titleText: {
+        fontSize: 30,
+        color: theme.primary,
+        textShadowOffset: {width: 2, height: 2},
+        textShadowRadius: 10,
+        textShadowColor: theme.secondary,
+    },
+    roomTitleText: {
+        marginTop: 1,
+        marginLeft: 10,
+        marginBottom: 10,
+        marginRight: 10,
+        borderRadius: 5,
+        backgroundColor: "#173757b0",
+        padding: 2,
+        position: 'absolute',
+        top: 0,
+        left: 0,
     }
 });
