@@ -3,6 +3,24 @@ import {getObjectValue, getStringValue, removeValue, setObjectValue, setStringVa
 const token = "token";
 const userInfo = "userInfo";
 const userId = "userId";
+const roomId = "roomId";
+const roomNumber = "roomNumber";
+const wsToken = "wsToken";
+
+export function setLoginInfo(data) {
+    setToken(data.token);
+    setWsToken(data.wsToken);
+    setRoomId(data.roomId);
+    setRoomNumber(data.roomNumber);
+    setUserId(data.userid);
+}
+
+export function setCreatedRoomInfo(data) {
+    setWsToken(data.wsToken);
+    setRoomNumber(data.roomNumber);
+    setRoomId(data.roomId);
+}
+
 
 export async function getToken() {
     return await getStringValue(token)
@@ -10,6 +28,30 @@ export async function getToken() {
 
 export function setToken(value: string) {
     setStringValue(token, value).then();
+}
+
+export async function getWsToken() {
+    return await getStringValue(wsToken)
+}
+
+export function setWsToken(value: string) {
+    setStringValue(wsToken, value).then();
+}
+
+export async function getRoomId() {
+    return await getStringValue(roomId)
+}
+
+export function setRoomId(value: string) {
+    setStringValue(roomId, value).then();
+}
+
+export async function getRoomNumber() {
+    return await getStringValue(roomNumber)
+}
+
+export function setRoomNumber(value: string) {
+    setStringValue(roomNumber, value).then();
 }
 
 export async function getUserId() {

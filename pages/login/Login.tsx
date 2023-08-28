@@ -9,7 +9,7 @@ import GradualButton from "../../component/GradualButton";
 import {useState} from "react";
 import {login} from "../../api/user";
 import {toastError} from "../../utils/toast";
-import {setToken, setUserId, setUserInfo} from "../../storage/user";
+import {setLoginInfo} from "../../storage/user";
 import CustomTextInput from "../../component/CustomTextInput";
 
 export default function Login() {
@@ -30,8 +30,7 @@ export default function Login() {
         }
         login({account: username, password}).then(res => {
             if (res.data.code == 0) {
-                setToken(res.data.data.token);
-                setUserId(res.data.data.userid);
+                setLoginInfo(res.data.data);
                 navigation.reset({
                     index: 0,
                     routes: [{name: 'Tab'}],
