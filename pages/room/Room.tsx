@@ -107,10 +107,10 @@ export default function Room() {
 
     useEffect(() => {
         userRoomInfo().then(res => {
-            if (res.data.code == 0) {
-                setUserInfos(res.data.data.userRooms)
-                serRoomInfo(res.data.data.room)
-                onWb(res.data.data.room);
+            if (res.code == 0) {
+                setUserInfos(res.data.userRooms)
+                serRoomInfo(res.data.room)
+                onWb(res.data.room);
             }
         })
         return () => {
@@ -156,8 +156,8 @@ export default function Room() {
 
     const getUserPortraitUrl = (userid) => {
         getUserPortrait({userid}).then(res => {
-            if (res.data.code == 0) {
-                let url = res.data.data
+            if (res.code == 0) {
+                let url = res.data
                 serPortraitCache((prev) => ({
                     ...prev,
                     [userid]: url,

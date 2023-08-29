@@ -29,14 +29,14 @@ export default function Login() {
             return;
         }
         login({account: username, password}).then(res => {
-            if (res.data.code == 0) {
-                setLoginInfo(res.data.data);
+            if (res.code == 0) {
+                setLoginInfo(res.data);
                 navigation.reset({
                     index: 0,
                     routes: [{name: 'Tab'}],
                 })
             } else {
-                toastError(res.data.msg);
+                toastError(res.msg);
             }
         })
     }

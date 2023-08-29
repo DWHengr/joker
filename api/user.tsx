@@ -1,4 +1,4 @@
-import {get, post} from "../utils/axios";
+import {get, post} from "../utils/fetch";
 
 export const login = (loginInfo) => {
     return post("/api/login", loginInfo)

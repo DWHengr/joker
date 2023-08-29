@@ -23,8 +23,8 @@ export default function CreateRoom() {
 
     const onCreateRoom = () => {
         createRoom({roomName, roomPassword, roomType}).then(res => {
-            if (res.data.code == 0) {
-                setCreatedRoomInfo(res.data.data)
+            if (res.code == 0) {
+                setCreatedRoomInfo(res.data)
                 onNavigate("Room")
             }
         })
