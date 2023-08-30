@@ -20,7 +20,7 @@ import CustomSwitch from "../../component/CustomSwitch";
 import IconSelectMenu from "../../component/IconSelectMenu";
 import {userRoomInfo} from "../../api/userRoom";
 import {getUserPortrait} from "../../api/user";
-import {getWsToken, removeRoomInfo} from "../../storage/user";
+import {getUserId, getWsToken, removeRoomInfo} from "../../storage/user";
 import {useNavigation} from "@react-navigation/native";
 import NiuNIuCalculate from "../../component/NiuNIuCalculate";
 import {RoomType} from "../common/RoomType";
@@ -29,6 +29,8 @@ export default function Room() {
     const [scoreResult, setScoreResult] = useState("0");
     const [userInfos, setUserInfos] = useState([]);
     const [roomInfo, serRoomInfo] = useState({number: "", round: "", id: "", name: "", type: ""});
+    const [roomOwnerUserId, setRoomOwnerUserId] = useState("userid");
+    const [userId, setUserId] = useState("");
     const [portraitCache, serPortraitCache] = useState({});
     const defaultPortraitImg = require("../../assets/icon.png")
     const navigation = useNavigation();
@@ -38,6 +40,11 @@ export default function Room() {
     const reconnectInterval = 6000;
     let ws = null;
 
+    const setCurrentRoomInfo = (data) => {
+        serRoomInfo(data.room)
+        setUserInfos(data.userRooms)
+        setRoomOwnerUserId(data.roomOwnerUserId)
+    }
 
     const onWb = async () => {
         if (reconnectAttempts < maxReconnectAttempts) {
@@ -54,8 +61,7 @@ export default function Room() {
             };
             ws.onmessage = res => {
                 let parse = JSON.parse(res.data);
-                serRoomInfo(parse.room)
-                setUserInfos(parse.userRooms)
+                setCurrentRoomInfo(parse)
             };
             ws.onclose = e => {
                 console.log("连接失败:", e.code, e.reason);
@@ -79,6 +85,7 @@ export default function Room() {
     };
 
     useEffect(() => {
+        getUserId().then(res => setUserId(res))
         const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
         return () => {
             backHandler.remove();
@@ -88,8 +95,7 @@ export default function Room() {
     useEffect(() => {
         userRoomInfo().then(res => {
             if (res.code == 0) {
-                setUserInfos(res.data.userRooms)
-                serRoomInfo(res.data.room)
+                setCurrentRoomInfo(res.data)
                 onWb(res.data.room);
             }
         })
@@ -149,14 +155,26 @@ export default function Room() {
                                 <Text style={{color: theme.secondary, fontSize: 12}}>房间号：{roomInfo.number}</Text>
                                 <Text style={{color: theme.primary, fontSize: 12}}>第{roomInfo.round}轮</Text>
                             </View>
-                            <IconSelectMenu
-                                type="dots-three-horizontal"
-                                options={[{
-                                    title: '退出房间', onPress: () => {
-                                        removeRoomInfo();
-                                        backAction();
-                                    }
-                                }]}/>
+                            {roomOwnerUserId != userId &&
+                                <IconSelectMenu
+                                    type="dots-three-horizontal"
+                                    options={[{
+                                        title: '退出房间', onPress: () => {
+                                            removeRoomInfo();
+                                            backAction();
+                                        }
+                                    }]}/>
+                            }
+                            {roomOwnerUserId == userId &&
+                                <IconSelectMenu
+                                    type="dots-three-horizontal"
+                                    options={[{
+                                        title: '解散房间', onPress: () => {
+                                            removeRoomInfo();
+                                            backAction();
+                                        }
+                                    }]}/>
+                            }
                         </View>
                         <View
                             style={{flexDirection: 'row', height: 50, justifyContent: 'center', alignItems: 'center'}}>
@@ -207,8 +225,11 @@ export default function Room() {
                                 {
                                     userInfos?.map(info => (
                                         <TouchableOpacity key={info.id}
-                                                          activeOpacity={0.6}
-                                                          onLongPress={() => setUserOpeModalVisible(true)}>
+                                                          activeOpacity={roomOwnerUserId == userId ? 0.6 : 1}
+                                                          onLongPress={roomOwnerUserId == userId ?
+                                                              () => setUserOpeModalVisible(true) :
+                                                              () => {
+                                                              }}>
                                             <View style={[styles.userInfoContainer]}>
                                                 <View style={{flexDirection: 'row', alignItems: 'center'}}>
                                                     <View style={{width: 50, height: 50, borderRadius: 10}}>
