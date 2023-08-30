@@ -9,11 +9,12 @@ import GradualButton from "../../component/GradualButton";
 import {createRoom} from "../../api/room";
 import {setCreatedRoomInfo} from "../../storage/user";
 import {useNavigation} from "@react-navigation/native";
+import {RoomType} from "../common/RoomType";
 
 export default function CreateRoom() {
     const [roomName, setRoomName] = useState("");
     const [roomPassword, setRoomPassword] = useState("");
-    const [roomType, setRoomType] = useState("room");
+    const [roomType, setRoomType] = useState(RoomType.Other);
 
     const navigation = useNavigation();
 
@@ -60,8 +61,8 @@ export default function CreateRoom() {
                                 <CustomCheckBox
                                     value={roomType}
                                     checks={[
-                                        {key: '斗牛', value: 'room'},
-                                        {key: '其他', value: 'other'}
+                                        {key: '斗牛', value: RoomType.Niuniu},
+                                        {key: '其他', value: RoomType.Other}
                                     ]}
                                     onChecked={(value) => {
                                         setRoomType(value)

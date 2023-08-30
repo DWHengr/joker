@@ -13,7 +13,6 @@ import {SafeAreaView} from "react-native-safe-area-context";
 import CustomHeaderReturn from "../../component/CustomHeaderReturn";
 import {theme} from "../common/Theme";
 import {useEffect, useState} from "react";
-import PokerSegmentPicker from "../../component/PokerSegmentPicker";
 import GradualButton from "../../component/GradualButton";
 import BottomModal from "../../component/BottomModal";
 import IconTextButton from "../../component/IconTextButton";
@@ -23,26 +22,13 @@ import {userRoomInfo} from "../../api/userRoom";
 import {getUserPortrait} from "../../api/user";
 import {getWsToken, removeRoomInfo} from "../../storage/user";
 import {useNavigation} from "@react-navigation/native";
-
-const cardsImg =
-    {
-        heart: require('../../assets/poker-heart.png'),
-        diamond: require('../../assets/poker-diamond.png'),
-        club: require('../../assets/poker-club.png'),
-        spade: require('../../assets/poker-spade.png')
-    }
-
-const CardValues = {
-    'A': 1, '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9, '10': 10, 'J': 10, 'Q': 10, 'K': 10
-};
+import NiuNIuCalculate from "../../component/NiuNIuCalculate";
+import {RoomType} from "../common/RoomType";
 
 export default function Room() {
-    const [pokerVisible, setPokerVisible] = useState(false);
-    const [currentSelectionCardIndex, setCurrentSelectionCardIndex] = useState(0);
-    const [niuResult, setNiuResult] = useState(-1);
     const [scoreResult, setScoreResult] = useState("0");
     const [userInfos, setUserInfos] = useState([]);
-    const [roomInfo, serRoomInfo] = useState({number: "", round: "", id: "", name: ""});
+    const [roomInfo, serRoomInfo] = useState({number: "", round: "", id: "", name: "", type: ""});
     const [portraitCache, serPortraitCache] = useState({});
     const defaultPortraitImg = require("../../assets/icon.png")
     const navigation = useNavigation();
@@ -52,13 +38,6 @@ export default function Room() {
     const reconnectInterval = 6000;
     let ws = null;
 
-    const [cards, setCards] = useState([
-        {num: "A", suit: "heart"},
-        {num: "K", suit: "club"},
-        {num: "J", suit: "diamond"},
-        {num: "Q", suit: "spade"},
-        {num: "8", suit: "heart"},
-    ])
 
     const onWb = async () => {
         if (reconnectAttempts < maxReconnectAttempts) {
@@ -123,38 +102,10 @@ export default function Room() {
     const [cardsVisible, setCardsVisible] = useState(false);
 
 
-    const onSelectCardAndNum = async (cardIndex) => {
-        await setCurrentSelectionCardIndex(cardIndex);
-        setPokerVisible(true);
-    }
-
     const stringToNumber = (str) => {
         const parsedNumber = parseInt(str, 10);
         return isNaN(parsedNumber) ? 0 : parsedNumber;
     }
-
-    const onCalculateNiu = () => {
-        const n = cards.length;
-        let niu = 0;
-        for (let i = 0; i < n - 2; i++) {
-            for (let j = i + 1; j < n - 1; j++) {
-                for (let k = j + 1; k < n; k++) {
-                    const sum = CardValues[cards[i].num] + CardValues[cards[j].num] + CardValues[cards[k].num];
-                    if (sum % 10 === 0) {
-                        let remainingSum = 0;
-                        for (let l = 0; l < n; l++) {
-                            if (l !== i && l !== j && l !== k) {
-                                remainingSum += CardValues[cards[l].num];
-                            }
-                        }
-                        niu = remainingSum % 10 === 0 ? 10 : remainingSum % 10;
-                    }
-                }
-            }
-        }
-        setNiuResult(niu)
-    }
-
 
     const getUserPortraitUrl = (userid) => {
         getUserPortrait({userid}).then(res => {
@@ -169,78 +120,28 @@ export default function Room() {
         return defaultPortraitImg;
     }
 
+    const getAssistComponent = (type) => {
+        switch (type) {
+            case RoomType.Niuniu:
+                return <NiuNIuCalculate/>
+        }
+    }
+
     return (
         <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
             <SafeAreaView style={[styles.container]}>
-                <PokerSegmentPicker
-                    visible={pokerVisible}
-                    onCancel={() => setPokerVisible(false)}
-                    onConfirm={(value) => {
-                        cards[currentSelectionCardIndex].suit = value.suit;
-                        cards[currentSelectionCardIndex].num = value.num;
-                        setCards(cards)
-                        setPokerVisible(false)
-                    }}
-                    defaultSelections={cards[currentSelectionCardIndex]}
-                />
                 <View style={{backgroundColor: '#ffffff', height: '100%'}}>
                     <CustomHeaderReturn title={roomInfo.name} isReturn={true} returnPage="Tab"></CustomHeaderReturn>
-                    <CustomSwitch
-                        text={cardsVisible ? "关闭辅助" : "开启辅助"}
-                        enabled={cardsVisible}
-                        onValueChange={(value) => setCardsVisible(value)}
-                    />
+                    {roomInfo.type != RoomType.Other ?
+                        <CustomSwitch
+                            text={cardsVisible ? "关闭辅助" : "开启辅助"}
+                            enabled={cardsVisible}
+                            onValueChange={(value) => setCardsVisible(value)}
+                        /> :
+                        <View style={{marginTop: 15}}/>
+                    }
                     {cardsVisible &&
-                        <View style={{flexDirection: 'row', justifyContent: 'center', marginBottom: 10}}>
-                            <View style={{height: 130, width: '100%', flexDirection: 'colum',}}>
-                                <View style={{flex: 1, flexDirection: 'colum'}}>
-                                    <View style={{
-                                        flex: 1,
-                                        flexDirection: 'row',
-                                        justifyContent: 'space-between',
-                                        paddingRight: 20,
-                                        paddingLeft: 20
-                                    }}>
-                                        {cards?.map((card, index) => (
-                                            <TouchableOpacity key={index} onPress={() => onSelectCardAndNum(index)}>
-                                                <View style={[styles.cardsContainer]}>
-                                                    <Image
-                                                        style={[StyleSheet.absoluteFill, styles.cardsImg]}
-                                                        source={cardsImg[card.suit]}
-                                                    />
-                                                    <View style={[styles.cardsTextContainer]}>
-                                                        <Text style={{fontSize: 16}}>{card.num}</Text>
-                                                    </View>
-                                                </View>
-                                            </TouchableOpacity>
-                                        ))}
-                                    </View>
-                                    <View style={{
-                                        flexDirection: 'row',
-                                        justifyContent: 'center',
-                                        alignItems: 'center',
-                                        marginBottom: 8
-                                    }}>
-                                        {niuResult == 0 && <Text>没</Text>}
-                                        <Image style={{width: 20, height: 20}}
-                                               source={require('../../assets/niu.png')}/>
-                                        {niuResult == 10 && <Image style={{width: 20, height: 20}}
-                                                                   source={require('../../assets/niu.png')}/>}
-                                        {niuResult > 0 && niuResult < 10 && <Text>{niuResult}</Text>}
-
-                                    </View>
-                                    <View style={{
-                                        flexDirection: 'colum',
-                                        justifyContent: 'center',
-                                        alignItems: 'center'
-                                    }}>
-                                        <View style={{width: 200}}>
-                                            <GradualButton radius={15} text='计算牛牛' onPress={onCalculateNiu}/>
-                                        </View>
-                                    </View>
-                                </View>
-                            </View>
-                        </View>
+                        getAssistComponent(roomInfo.type)
                     }
                     <View style={[styles.userInfoListContainer]}>
                         <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
