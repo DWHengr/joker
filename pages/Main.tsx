@@ -7,6 +7,7 @@ import {View} from "react-native";
 import Toast from "react-native-toast-message";
 import {toastConfig} from "../utils/toast";
 import CreateRoom from "./createRoom/CreateRoom";
+import {StatusBar} from "expo-status-bar";
 
 export type RootStackParamList = {
     Login: undefined,
@@ -23,6 +24,7 @@ export default function Main() {
             <View style={{zIndex: 999}}>
                 <Toast config={toastConfig}/>
             </View>
+            <StatusBar style="auto"/>
             <Stack.Navigator
                 initialRouteName='Login'
                 screenOptions={({route}) => ({

@@ -11,7 +11,7 @@ export default function CustomTextInput({placeholder, value, onChangeText, type 
                 maxLength={limit == 0 ? 100 : limit}
                 style={[styles.textInput]}
                 placeholder={placeholder}
-                secureTextEntry={type == 'password'}
+                secureTextEntry={type == 'password' && isShowPassword}
                 placeholderTextColor="#b2b2b2"
                 value={value}
                 onChangeText={(value) => {
@@ -32,16 +32,17 @@ export default function CustomTextInput({placeholder, value, onChangeText, type 
                 />
             }
             {type == 'password' && (isShowPassword ?
-                <Ionicons
-                    onPress={() => setIsShowPassword(false)}
-                    style={{marginLeft: 4, marginRight: 4}}
-                    name="md-eye-outline" size={20}
-                    color="#b2b2b2"/> :
-                <Ionicons
-                    onPress={() => setIsShowPassword(true)}
-                    style={{marginLeft: 4, marginRight: 4}}
-                    name="md-eye-off-outline" size={20}
-                    color="#b2b2b2"/>)
+                    <Ionicons
+                        onPress={() => setIsShowPassword(false)}
+                        style={{marginLeft: 4, marginRight: 4}}
+                        name="md-eye-off-outline" size={20}
+                        color="#b2b2b2"/>
+                    : <Ionicons
+                        onPress={() => setIsShowPassword(true)}
+                        style={{marginLeft: 4, marginRight: 4}}
+                        name="md-eye-outline" size={20}
+                        color="#b2b2b2"/>
+            )
             }
         </View>
     )

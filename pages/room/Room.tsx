@@ -22,7 +22,7 @@ import IconSelectMenu from "../../component/IconSelectMenu";
 import {userRoomInfo} from "../../api/userRoom";
 import {getUserPortrait} from "../../api/user";
 import {getWsToken, removeRoomInfo} from "../../storage/user";
-import {CommonActions, useNavigation} from "@react-navigation/native";
+import {useNavigation} from "@react-navigation/native";
 
 const cardsImg =
     {
@@ -44,6 +44,7 @@ export default function Room() {
     const [userInfos, setUserInfos] = useState([]);
     const [roomInfo, serRoomInfo] = useState({number: "", round: "", id: "", name: ""});
     const [portraitCache, serPortraitCache] = useState({});
+    const defaultPortraitImg = require("../../assets/icon.png")
     const navigation = useNavigation();
 
     let reconnectAttempts = 0;
@@ -154,6 +155,7 @@ export default function Room() {
         setNiuResult(niu)
     }
 
+
     const getUserPortraitUrl = (userid) => {
         getUserPortrait({userid}).then(res => {
             if (res.code == 0) {
@@ -164,6 +166,7 @@ export default function Room() {
                 }))
             }
         })
+        return defaultPortraitImg;
     }
 
     return (
@@ -309,9 +312,9 @@ export default function Room() {
                                                 <View style={{flexDirection: 'row', alignItems: 'center'}}>
                                                     <View style={{width: 50, height: 50, borderRadius: 10}}>
                                                         <Image style={{width: 50, height: 50, borderRadius: 10}}
-                                                               source={{
-                                                                   uri: portraitCache[info.userId] ? portraitCache[info.userId] : getUserPortraitUrl(info.userId)
-                                                               }}>
+                                                               source={(portraitCache[info.userId] ? {
+                                                                   uri: portraitCache[info.userId]
+                                                               } : getUserPortraitUrl(info.userId))}>
                                                         </Image>
                                                     </View>
                                                     <View style={{marginLeft: 6}}>
