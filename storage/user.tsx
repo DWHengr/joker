@@ -12,7 +12,7 @@ export function setLoginInfo(data) {
     setWsToken(data.wsToken);
     setRoomId(data.roomId);
     setRoomNumber(data.roomNumber);
-    setUserId(data.userid);
+    setUserId(data.userId);
 }
 
 export function setCreatedRoomInfo(data) {
