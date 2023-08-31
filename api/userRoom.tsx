@@ -1,5 +1,10 @@
-import {get} from "../utils/fetch";
+import {get, post} from "../utils/fetch";
 
 export const userRoomInfo = () => {
     return get("/api/userRoom/info")
+}
+
+
+export const userJoinRoom = (param) => {
+    return post("/api/userRoom/join", param)
 }
