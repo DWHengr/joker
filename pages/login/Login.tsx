@@ -1,4 +1,12 @@
-import {Text, StyleSheet, View, Image, TextInput, TouchableWithoutFeedback, Keyboard} from 'react-native'
+import {
+    Text,
+    StyleSheet,
+    View,
+    Image,
+    TouchableWithoutFeedback,
+    Keyboard,
+    TouchableOpacity
+} from 'react-native'
 import {SafeAreaView} from 'react-native-safe-area-context'
 import {useNavigation} from "@react-navigation/native";
 import {NativeStackNavigationProp} from "@react-navigation/native-stack";
@@ -8,7 +16,7 @@ import {theme} from "../common/Theme";
 import GradualButton from "../../component/GradualButton";
 import {useState} from "react";
 import {login} from "../../api/user";
-import {toastError} from "../../utils/toast";
+import {toastError, toastInfo} from "../../utils/toast";
 import {setLoginInfo} from "../../storage/user";
 import CustomTextInput from "../../component/CustomTextInput";
 
@@ -17,7 +25,6 @@ export default function Login() {
     const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList, 'Login'>>()
     const [username, setUsername] = useState("")
     const [password, setPassword] = useState("")
-    const [isShowPassword, setIsShowPassword] = useState(false)
 
     const onLogin = () => {
         if (!username) {
@@ -49,7 +56,7 @@ export default function Login() {
                 end={{x: 1, y: 1}}
                 style={[styles.container]}
             >
-                <View style={{height: 260, width: '100%', justifyContent: 'flex-end', marginTop: -40}}>
+                <View style={{height: 200, width: '100%', justifyContent: 'flex-end', marginTop: -40}}>
                     <View style={{
                         justifyContent: 'center',
                         alignItems: 'center',
@@ -63,7 +70,29 @@ export default function Login() {
                 <SafeAreaView style={{flexDirection: 'column', alignItems: 'center'}}>
                     <View style={[styles.loginContainer]}>
                         <View style={{width: '100%', alignItems: 'center'}}>
-                            <View style={{width: '90%'}}>
+                            <View style={{width: '90%', flexDirection: 'row', marginBottom: 20}}>
+                                <View>
+                                    <Image
+                                        style={{height: 60, width: 60, borderRadius: 5}}
+                                        source={require('../../assets/icon.png')}/>
+                                </View>
+                                <View style={{paddingLeft: 10}}>
+                                    <Text style={{fontSize: 10, color: theme.secondary}}>Hi! 欢迎使用</Text>
+                                    <View style={{alignItems: 'flex-end'}}>
+                                        <Text style={{
+                                            fontSize: 24,
+                                            color: theme.primary,
+                                            textShadowOffset: {width: 0.8, height: 0.8},
+                                            textShadowRadius: 5,
+                                            textShadowColor: theme.secondary,
+                                            fontWeight: 600
+                                        }}>博弈计分</Text>
+                                        <Text style={{fontSize: 10, color: theme.secondary}}>博弈精彩人生!</Text>
+                                    </View>
+
+                                </View>
+                            </View>
+                            <View style={{width: '90%', marginTop: 10}}>
                                 <CustomTextInput
                                     placeholder="手机号或邮箱"
                                     value={username}
@@ -71,7 +100,6 @@ export default function Login() {
                                 />
                                 <CustomTextInput
                                     placeholder="密码"
-                                    isShowPassword={isShowPassword}
                                     type="password"
                                     value={password}
                                     onChangeText={(value) => setPassword(value)}
@@ -90,6 +118,32 @@ export default function Login() {
                                     onPress={onLogin}
                                 />
                             </View>
+                            <View style={{
+                                width: "30%",
+                                marginTop: 50,
+                                flexDirection: 'row',
+                                justifyContent: 'center',
+                                alignItems: 'center'
+                            }}>
+                                <View style={{width: '100%', height: 1, backgroundColor: "#d0d0d0"}}></View>
+                                <Text
+                                    style={{marginLeft: 10, marginRight: 10, color: theme.secondary}}>第三方登录</Text>
+                                <View style={{width: '100%', height: 1, backgroundColor: "#d0d0d0"}}></View>
+                            </View>
+                            <View style={{flexDirection: 'row'}}>
+                                <TouchableOpacity
+                                    onPress={() => toastInfo('功能暂未上线~')}
+                                >
+                                    <Image style={[styles.thirdPartyIcon]}
+                                           source={require("../../assets/wechat.png")}/>
+                                </TouchableOpacity>
+                                <TouchableOpacity
+                                    onPress={() => toastInfo('功能暂未上线~')}
+                                >
+                                    <Image style={[styles.thirdPartyIcon]}
+                                           source={require("../../assets/qq.png")}/>
+                                </TouchableOpacity>
+                            </View>
                         </View>
                     </View>
                 </SafeAreaView>
@@ -107,8 +161,9 @@ const styles = StyleSheet.create({
         height: '100%',
         width: '100%',
         backgroundColor: '#ffffff',
+        borderRadius: 20,
         padding: 30,
-        marginTop: -40,
+        marginTop: -60,
         flexDirection: 'column',
     },
     loginTextInputBox: {
@@ -123,5 +178,10 @@ const styles = StyleSheet.create({
         flex: 1,
         color: "#b2b2b2",
         fontSize: 16,
+    },
+    thirdPartyIcon: {
+        width: 50,
+        height: 50,
+        margin: 15
     }
 });
