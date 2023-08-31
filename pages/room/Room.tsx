@@ -93,7 +93,9 @@ export default function Room() {
     }, [])
 
     useEffect(() => {
+        console.log(12)
         userRoomInfo().then(res => {
+            console.log(res)
             if (res.code == 0) {
                 setCurrentRoomInfo(res.data)
                 onWb(res.data.room);

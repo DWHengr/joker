@@ -89,7 +89,7 @@ export default function Home() {
                                 <View style={[styles.optionContainer]}>
                                     <Image style={[StyleSheet.absoluteFill, styles.optionImg]}
                                            source={require('../../assets/bg.png')}/>
-                                    <TouchableOpacity onPress={() => onNavigate('CreateRoom')}>
+                                    <TouchableOpacity onPress={() => onNavigate('JoinRoom')}>
                                         <View style={[styles.optionCard]}>
                                             <Text style={[styles.titleText]}>加入房间</Text>
                                         </View>
