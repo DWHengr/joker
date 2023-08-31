@@ -13,6 +13,14 @@ export const toastConfig = {
         <BaseToast
             {...props}
             style={{borderLeftColor: theme.primary}}
+            text1Style={{color: theme.primary}}
+        />
+    ),
+    info: (props) => (
+        <BaseToast
+            {...props}
+            style={{borderLeftColor: theme.primary}}
+            text1Style={{color: theme.primary}}
         />
     ),
 }
