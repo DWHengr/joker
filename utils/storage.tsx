@@ -8,7 +8,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
  */
 export const setStringValue = async (key: string, value: string) => {
     try {
-        await AsyncStorage.setItem(key, value);
+        await AsyncStorage.setItem(key, value ? value : "");
     } catch (e) {
         console.log("save string error")
     }

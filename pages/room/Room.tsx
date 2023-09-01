@@ -18,7 +18,7 @@ import BottomModal from "../../component/BottomModal";
 import IconTextButton from "../../component/IconTextButton";
 import CustomSwitch from "../../component/CustomSwitch";
 import IconSelectMenu from "../../component/IconSelectMenu";
-import {userRoomInfo} from "../../api/userRoom";
+import {userQuitRoom, userRoomInfo} from "../../api/userRoom";
 import {getUserPortrait} from "../../api/user";
 import {getUserId, getWsToken, removeRoomInfo} from "../../storage/user";
 import {useNavigation} from "@react-navigation/native";
@@ -46,6 +46,21 @@ export default function Room() {
         setRoomOwnerUserId(data.roomOwnerUserId)
     }
 
+    const onMsg = (msg) => {
+        switch (msg.type) {
+            case "Info":
+                setCurrentRoomInfo(msg.data);
+                break
+            case "Quit":
+                removeRoomInfo();
+                if (ws) ws.close();
+                backAction();
+                toastInfo("房主已解散房间~")
+                break
+        }
+
+    }
+
     const onWb = async () => {
         if (reconnectAttempts < maxReconnectAttempts) {
             let token;
@@ -60,8 +75,8 @@ export default function Room() {
                 reconnectAttempts = 0;
             };
             ws.onmessage = res => {
-                let parse = JSON.parse(res.data);
-                setCurrentRoomInfo(parse)
+                let msg = JSON.parse(res.data);
+                onMsg(msg);
             };
             ws.onclose = e => {
                 console.log("连接失败:", e.code, e.reason);
@@ -93,9 +108,7 @@ export default function Room() {
     }, [])
 
     useEffect(() => {
-        console.log(12)
         userRoomInfo().then(res => {
-            console.log(res)
             if (res.code == 0) {
                 setCurrentRoomInfo(res.data)
                 onWb(res.data.room);
@@ -135,6 +148,17 @@ export default function Room() {
         }
     }
 
+    const onQuitRoom = () => {
+        userQuitRoom({roomId: roomInfo.id}).then(res => {
+            if (res.code == 0) {
+                removeRoomInfo();
+                backAction();
+            } else {
+                toastError("房间退出失败")
+            }
+        })
+    }
+
     return (
         <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
             <SafeAreaView style={[styles.container]}>
@@ -161,20 +185,16 @@ export default function Room() {
                                 <IconSelectMenu
                                     type="dots-three-horizontal"
                                     options={[{
-                                        title: '退出房间', onPress: () => {
-                                            removeRoomInfo();
-                                            backAction();
-                                        }
+                                        title: '退出房间',
+                                        onPress: onQuitRoom
                                     }]}/>
                             }
                             {roomOwnerUserId == userId &&
                                 <IconSelectMenu
                                     type="dots-three-horizontal"
                                     options={[{
-                                        title: '解散房间', onPress: () => {
-                                            removeRoomInfo();
-                                            backAction();
-                                        }
+                                        title: '解散房间',
+                                        onPress: onQuitRoom
                                     }]}/>
                             }
                         </View>
@@ -329,6 +349,8 @@ export default function Room() {
         </TouchableWithoutFeedback>
     )
 }
+
+import {toastError, toastInfo} from "../../utils/toast";
 
 const styles = StyleSheet.create({
     container: {
