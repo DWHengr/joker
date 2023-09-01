@@ -14,7 +14,8 @@ import {theme} from "../common/Theme";
 import {useFocusEffect, useNavigation} from "@react-navigation/native";
 import {useCallback, useEffect, useState} from "react";
 import {toastInfo} from "../../utils/toast";
-import {getRoomNumber} from "../../storage/user";
+import {getRoomNumber, removeRoomInfo} from "../../storage/user";
+import {roomInfoByCurrentUser} from "../../api/room";
 
 export default function Home() {
 
@@ -52,6 +53,18 @@ export default function Home() {
         })
     }, []);
 
+    const enterRoom = () => {
+        roomInfoByCurrentUser().then(res => {
+            if (res.code == 0 && res.data) {
+                onNavigate('Room')
+            } else {
+                setRoomNumber(null);
+                toastInfo("房间已被解散~")
+                removeRoomInfo();
+            }
+        })
+    }
+
     return (
         <TouchableWithoutFeedback onPress={() => backClickCount = 0}>
             <SafeAreaView style={[styles.container]}>
@@ -62,7 +75,7 @@ export default function Home() {
                             <View style={[styles.optionContainer]}>
                                 <Image style={[StyleSheet.absoluteFill, styles.optionImg]}
                                        source={require('../../assets/bg.png')}/>
-                                <TouchableOpacity onPress={() => onNavigate('Room')}>
+                                <TouchableOpacity onPress={enterRoom}>
                                     <View style={[styles.optionCard]}>
                                         <Text style={[styles.titleText]}>进入房间</Text>
                                         <View style={[styles.roomTitleText]}>
