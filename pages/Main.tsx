@@ -9,6 +9,7 @@ import {toastConfig} from "../utils/toast";
 import CreateRoom from "./createRoom/CreateRoom";
 import {StatusBar} from "expo-status-bar";
 import JoinRoom from "./joinRoom/JoinRoom";
+import QrScan from "./qrScan/QrScan";
 
 export type RootStackParamList = {
     Login: undefined,
@@ -60,6 +61,11 @@ export default function Main() {
                 < Stack.Screen
                     name="JoinRoom"
                     component={JoinRoom}
+                    options={{headerShown: false}}
+                ></Stack.Screen>
+                < Stack.Screen
+                    name="QrScan"
+                    component={QrScan}
                     options={{headerShown: false}}
                 ></Stack.Screen>
             </Stack.Navigator>
