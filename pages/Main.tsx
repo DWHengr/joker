@@ -10,6 +10,7 @@ import CreateRoom from "./createRoom/CreateRoom";
 import {StatusBar} from "expo-status-bar";
 import JoinRoom from "./joinRoom/JoinRoom";
 import QrScan from "./qrScan/QrScan";
+import QrCreate from "./qrCreate/QrCreate";
 
 export type RootStackParamList = {
     Login: undefined,
@@ -66,6 +67,11 @@ export default function Main() {
                 < Stack.Screen
                     name="QrScan"
                     component={QrScan}
+                    options={{headerShown: false}}
+                ></Stack.Screen>
+                < Stack.Screen
+                    component={QrCreate}
+                    name="QrCreate"
                     options={{headerShown: false}}
                 ></Stack.Screen>
             </Stack.Navigator>
