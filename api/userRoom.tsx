@@ -11,3 +11,7 @@ export const userJoinRoom = (param) => {
 export const userQuitRoom = (param) => {
     return post("/api/userRoom/quit", param)
 }
+
+export const createQrToken = () => {
+    return get("/api/userRoom/qr/token")
+}

@@ -12,7 +12,7 @@ import {
 import {SafeAreaView} from "react-native-safe-area-context";
 import CustomHeaderReturn from "../../component/CustomHeaderReturn";
 import {theme} from "../common/Theme";
-import {useEffect, useState} from "react";
+import {useCallback, useEffect, useState} from "react";
 import GradualButton from "../../component/GradualButton";
 import BottomModal from "../../component/BottomModal";
 import IconTextButton from "../../component/IconTextButton";
@@ -21,7 +21,7 @@ import IconSelectMenu from "../../component/IconSelectMenu";
 import {userQuitRoom, userRoomInfo} from "../../api/userRoom";
 import {getUserPortrait} from "../../api/user";
 import {getUserId, getWsToken, removeRoomInfo} from "../../storage/user";
-import {useNavigation} from "@react-navigation/native";
+import {useFocusEffect, useNavigation} from "@react-navigation/native";
 import NiuNIuCalculate from "../../component/NiuNIuCalculate";
 import {RoomType} from "../common/RoomType";
 
@@ -99,15 +99,18 @@ export default function Room() {
         return true;
     };
 
-    useEffect(() => {
-        getUserId().then(res => setUserId(res))
-        const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
-        return () => {
-            backHandler.remove();
-        }
-    }, [])
+    useFocusEffect(
+        useCallback(() => {
+            const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
+            return () => {
+                backHandler.remove();
+            };
+        }, [])
+    )
+
 
     useEffect(() => {
+        getUserId().then(res => setUserId(res))
         userRoomInfo().then(res => {
             if (res.code == 0) {
                 setCurrentRoomInfo(res.data)
@@ -178,25 +181,33 @@ export default function Room() {
                     <View style={[styles.userInfoListContainer]}>
                         <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
                             <View>
-                                <Text style={{color: theme.secondary, fontSize: 12}}>房间号：{roomInfo.number}</Text>
+                                <View style={{flexDirection: 'row'}}>
+                                    <Text style={{color: theme.secondary, fontSize: 12}}>房间号：{roomInfo.number}</Text>
+                                    <TouchableOpacity onPress={() => navigation.navigate("QrCreate")}>
+                                        <Image style={{width: 20, height: 20, marginLeft: 5}}
+                                               source={require("../../assets/qr-icon.png")}/>
+                                    </TouchableOpacity>
+                                </View>
                                 <Text style={{color: theme.primary, fontSize: 12}}>第{roomInfo.round}轮</Text>
                             </View>
-                            {roomOwnerUserId != userId &&
-                                <IconSelectMenu
-                                    type="dots-three-horizontal"
-                                    options={[{
-                                        title: '退出房间',
-                                        onPress: onQuitRoom
-                                    }]}/>
-                            }
-                            {roomOwnerUserId == userId &&
-                                <IconSelectMenu
-                                    type="dots-three-horizontal"
-                                    options={[{
-                                        title: '解散房间',
-                                        onPress: onQuitRoom
-                                    }]}/>
-                            }
+                            <View style={{flexDirection: 'row'}}>
+                                {roomOwnerUserId != userId &&
+                                    <IconSelectMenu
+                                        type="dots-three-horizontal"
+                                        options={[{
+                                            title: '退出房间',
+                                            onPress: onQuitRoom
+                                        }]}/>
+                                }
+                                {roomOwnerUserId == userId &&
+                                    <IconSelectMenu
+                                        type="dots-three-horizontal"
+                                        options={[{
+                                            title: '解散房间',
+                                            onPress: onQuitRoom
+                                        }]}/>
+                                }
+                            </View>
                         </View>
                         <View
                             style={{flexDirection: 'row', height: 50, justifyContent: 'center', alignItems: 'center'}}>

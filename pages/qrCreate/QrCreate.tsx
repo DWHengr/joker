@@ -6,10 +6,23 @@ import {SafeAreaView} from "react-native-safe-area-context";
 import * as FileSystem from 'expo-file-system';
 import * as MediaLibrary from 'expo-media-library';
 import {toastError, toastInfo} from "../../utils/toast";
+import {useEffect, useState} from "react";
+import {createQrToken} from "../../api/userRoom";
 
 
 export default function QrCreate() {
+    let [qrData, setQrData] = useState("");
     let svgRef = null;
+
+    useEffect(() => {
+        createQrToken().then(res => {
+            if (res.code == 0) {
+                setQrData(res.data.qrToken)
+            } else {
+                toastError("二维码生成错误")
+            }
+        })
+    }, [])
 
     const saveQRCodeToPhone = async () => {
         const mediaLibraryPermissions = await MediaLibrary.requestPermissionsAsync();
@@ -38,50 +51,52 @@ export default function QrCreate() {
         <SafeAreaView style={styles.container}>
             <View style={{height: "100%"}}>
                 <CustomHeaderReturn title='房间二维码' isReturn={true}/>
-                <View style={{
-                    flex: 1,
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    margin: 10
-                }}>
-                    <QRCode
-                        getRef={(c) => svgRef = c}
-                        value="Your QR Code Data"
-                        size={240}
-                        quietZone={20}
-                        enableLinearGradient={true}
-                        linearGradient={[theme.primary, theme.secondary]}
-                        backgroundColor={theme.containerBackgroundColor}
-                        logo={require('../../assets/icon.png')}
-                        logoSize={50}
-                        logoBackgroundColor={theme.containerBackgroundColor}
-                        logoMargin={6}
-                        logoBorderRadius={10}
-                    />
-                    <TouchableOpacity onPress={saveQRCodeToPhone}>
-                        <View style={{
-                            flexDirection: 'column',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            marginTop: 60
-                        }}>
+                {qrData &&
+                    <View style={{
+                        flex: 1,
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        margin: 10
+                    }}>
+                        <QRCode
+                            getRef={(c) => svgRef = c}
+                            value={qrData}
+                            size={240}
+                            quietZone={20}
+                            enableLinearGradient={true}
+                            linearGradient={[theme.primary, theme.secondary]}
+                            backgroundColor={theme.containerBackgroundColor}
+                            logo={require('../../assets/icon.png')}
+                            logoSize={50}
+                            logoBackgroundColor={theme.containerBackgroundColor}
+                            logoMargin={6}
+                            logoBorderRadius={10}
+                        />
+                        <TouchableOpacity onPress={saveQRCodeToPhone}>
                             <View style={{
-                                width: 70,
-                                height: 70,
+                                flexDirection: 'column',
                                 justifyContent: 'center',
                                 alignItems: 'center',
-                                backgroundColor: '#8a8a8a1a',
-                                borderRadius: 50
+                                marginTop: 60
                             }}>
-                                <Image
-                                    style={{width: 36, height: 36}}
-                                    source={require("../../assets/save.png")}
-                                />
+                                <View style={{
+                                    width: 70,
+                                    height: 70,
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                    backgroundColor: '#8a8a8a1a',
+                                    borderRadius: 50
+                                }}>
+                                    <Image
+                                        style={{width: 36, height: 36}}
+                                        source={require("../../assets/save.png")}
+                                    />
+                                </View>
+                                <Text style={{fontSize: 16, marginTop: 2, color: theme.secondary}}>保存</Text>
                             </View>
-                            <Text style={{fontSize: 16, marginTop: 2, color: theme.secondary}}>保存</Text>
-                        </View>
-                    </TouchableOpacity>
-                </View>
+                        </TouchableOpacity>
+                    </View>
+                }
             </View>
         </SafeAreaView>
     );
