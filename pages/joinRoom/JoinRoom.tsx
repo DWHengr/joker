@@ -31,6 +31,10 @@ export default function JoinRoom() {
         })
     }
 
+    const onQrScan = () => {
+        navigation.navigate("QrScan");
+    }
+
     return (
         <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
             <SafeAreaView style={[styles.container]}>
@@ -64,6 +68,16 @@ export default function JoinRoom() {
                                 }}
                                 text='加入房间'
                                 onPress={onJoinRoom}
+                            />
+                        </View>
+                        <View style={{marginTop: 10, width: '70%'}}>
+                            <GradualButton
+                                size='lg'
+                                buttonStyle={{
+                                    borderRadius: 20,
+                                }}
+                                text='扫码加入'
+                                onPress={onQrScan}
                             />
                         </View>
                     </View>

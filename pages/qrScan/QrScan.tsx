@@ -7,17 +7,21 @@ import {theme} from "../common/Theme";
 import {Camera} from "expo-camera";
 import {toastError} from "../../utils/toast";
 import * as ImagePicker from 'expo-image-picker';
+import {userJoinRoomByToken} from "../../api/userRoom";
+import {setCreatedRoomInfo} from "../../storage/user";
+import {useNavigation} from "@react-navigation/native";
 
 export default function QRScannerScreen() {
     const [hasPermission, setHasPermission] = useState(null);
     const [scanned, setScanned] = useState(false);
     const anim = useRef(new Animated.Value(0)).current;
+    const navigation = useNavigation();
 
     useEffect(() => {
         (async () => {
             const {status} = await BarCodeScanner.requestPermissionsAsync();
             const {imageStatus} = await ImagePicker.requestMediaLibraryPermissionsAsync();
-            setHasPermission(status === 'granted' && imageStatus.status === 'granted');
+            setHasPermission(status && imageStatus && status === 'granted' && imageStatus.status === 'granted');
         })();
 
         const screenHeight = Dimensions.get('window').height;
@@ -39,6 +43,18 @@ export default function QRScannerScreen() {
 
     }, []);
 
+    const joinRoom = (token) => {
+        userJoinRoomByToken({qrToken: token}).then(res => {
+            if (res.code == 0) {
+                setCreatedRoomInfo(res.data)
+                navigation.navigate("Room")
+            } else {
+                setScanned(false);
+                toastError(res.msg ? res.msg : "加入房间失败")
+            }
+        })
+    }
+
     const pickImageFromGallery = async () => {
         const result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.Images,
@@ -50,12 +66,13 @@ export default function QRScannerScreen() {
         if (!result.canceled) {
             const barcodes = await BarCodeScanner.scanFromURLAsync(result.assets[0].uri);
             if (barcodes)
-                console.log(barcodes[0].data);
+                joinRoom(barcodes[0].data)
         }
     };
 
     const handleBarCodeScanned = ({type, data}) => {
         setScanned(true);
+        joinRoom(data);
     };
 
     if (hasPermission === false) {
