@@ -23,3 +23,8 @@ export const userJoinRoomByToken = (param) => {
 export const userKickOut = (param) => {
     return post("/api/userRoom/kickOut", param)
 }
+
+export const userSetOwner = (param) => {
+    return post("/api/userRoom/owner", param)
+}
+
