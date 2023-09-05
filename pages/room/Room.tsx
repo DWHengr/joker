@@ -34,6 +34,7 @@ export default function Room() {
     const [portraitCache, serPortraitCache] = useState({});
     const defaultPortraitImg = require("../../assets/icon.png")
     const navigation = useNavigation();
+    const loading = useLoading();
 
     let reconnectAttempts = 0;
     const maxReconnectAttempts = 10;
@@ -71,6 +72,12 @@ export default function Room() {
                 return
             ws = new WebSocket(`ws://114.67.242.151:18088/ws/room/${token}`);
             ws.onopen = () => {
+                loading.showLoading("加载中...")
+                userRoomInfo().then(res => {
+                    if (res.code == 0) {
+                        setCurrentRoomInfo(res.data)
+                    }
+                }).finally(() => loading.hideLoading())
                 ws.send('open');
                 reconnectAttempts = 0;
             };
@@ -101,6 +108,7 @@ export default function Room() {
 
     useFocusEffect(
         useCallback(() => {
+            loading.showLoading("加载中...")
             const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
             return () => {
                 backHandler.remove();
@@ -111,12 +119,7 @@ export default function Room() {
 
     useEffect(() => {
         getUserId().then(res => setUserId(res))
-        userRoomInfo().then(res => {
-            if (res.code == 0) {
-                setCurrentRoomInfo(res.data)
-                onWb(res.data.room);
-            }
-        })
+        onWb();
         return () => {
             if (ws) ws.close();
         }
@@ -362,6 +365,7 @@ export default function Room() {
 }
 
 import {toastError, toastInfo} from "../../utils/toast";
+import {useLoading} from "../../component/CustomLoadingProvider";
 
 const styles = StyleSheet.create({
     container: {

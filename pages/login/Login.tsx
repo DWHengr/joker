@@ -19,12 +19,14 @@ import {login} from "../../api/user";
 import {toastError, toastInfo} from "../../utils/toast";
 import {setLoginInfo} from "../../storage/user";
 import CustomTextInput from "../../component/CustomTextInput";
+import {useLoading} from "../../component/CustomLoadingProvider";
 
 export default function Login() {
 
     const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList, 'Login'>>()
     const [username, setUsername] = useState("")
     const [password, setPassword] = useState("")
+    const loading = useLoading()
 
     const onLogin = () => {
         if (!username) {
@@ -35,6 +37,7 @@ export default function Login() {
             toastError("密码不能为空");
             return;
         }
+        loading.showLoading("登录中...");
         login({account: username, password}).then(res => {
             if (res.code == 0) {
                 setLoginInfo(res.data);
@@ -45,7 +48,7 @@ export default function Login() {
             } else {
                 toastError(res.msg);
             }
-        })
+        }).finally(() => loading.hideLoading())
     }
 
     return (

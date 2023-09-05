@@ -1,13 +1,16 @@
-import {Dimensions, StyleSheet} from 'react-native';
+import {Dimensions, StyleSheet, Text} from 'react-native';
 import {NavigationContainer} from "@react-navigation/native";
 import Main from "./pages/Main";
 import {MenuProvider} from "react-native-popup-menu";
+import CustomLoadingProvider from "./component/CustomLoadingProvider";
 
 export default function App() {
     return (
         <NavigationContainer style={[styles.container]}>
             <MenuProvider>
-                <Main></Main>
+                <CustomLoadingProvider>
+                    <Main></Main>
+                </CustomLoadingProvider>
             </MenuProvider>
         </NavigationContainer>
     )
