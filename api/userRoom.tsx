@@ -19,3 +19,7 @@ export const createQrToken = () => {
 export const userJoinRoomByToken = (param) => {
     return post("/api/userRoom/qr/join", param)
 }
+
+export const userKickOut = (param) => {
+    return post("/api/userRoom/kickOut", param)
+}

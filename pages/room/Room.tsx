@@ -18,7 +18,7 @@ import BottomModal from "../../component/BottomModal";
 import IconTextButton from "../../component/IconTextButton";
 import CustomSwitch from "../../component/CustomSwitch";
 import IconSelectMenu from "../../component/IconSelectMenu";
-import {userQuitRoom, userRoomInfo} from "../../api/userRoom";
+import {userKickOut, userQuitRoom, userRoomInfo} from "../../api/userRoom";
 import {getUserPortrait} from "../../api/user";
 import {getUserId, getWsToken, removeRoomInfo} from "../../storage/user";
 import {useFocusEffect, useNavigation} from "@react-navigation/native";
@@ -35,6 +35,8 @@ export default function Room() {
     const defaultPortraitImg = require("../../assets/icon.png")
     const navigation = useNavigation();
     const loading = useLoading();
+    const [currentSelectedUser, setCurrentSelectedUser] = useState(null);
+
 
     let reconnectAttempts = 0;
     const maxReconnectAttempts = 10;
@@ -58,8 +60,27 @@ export default function Room() {
                 backAction();
                 toastInfo("房主已解散房间~")
                 break
+            case "Kick":
+                removeRoomInfo();
+                if (ws) ws.close();
+                backAction();
+                toastInfo("您已被房主请出房间~")
+                break
         }
 
+    }
+
+
+    const onKickOut = () => {
+        if (!currentSelectedUser) {
+            toastError("请先选择成员~")
+            return;
+        }
+        userKickOut({userId: currentSelectedUser.userId, roomId: roomInfo.id}).then(res => {
+            if (res.code != 0) {
+                toastError(res.msg)
+            }
+        }).finally(() => setUserOpeModalVisible(false))
     }
 
     const onWb = async () => {
@@ -108,7 +129,6 @@ export default function Room() {
 
     useFocusEffect(
         useCallback(() => {
-            loading.showLoading("加载中...")
             const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
             return () => {
                 backHandler.remove();
@@ -118,6 +138,7 @@ export default function Room() {
 
 
     useEffect(() => {
+        loading.showLoading("加载中...")
         getUserId().then(res => setUserId(res))
         onWb();
         return () => {
@@ -163,6 +184,11 @@ export default function Room() {
                 toastError("房间退出失败")
             }
         })
+    }
+
+    const onSelectUser = (user) => {
+        setCurrentSelectedUser(user);
+        setUserOpeModalVisible(true);
     }
 
     return (
@@ -260,10 +286,10 @@ export default function Room() {
                             <View>
                                 {
                                     userInfos?.map(info => (
-                                        <TouchableOpacity key={info.id}
+                                        <TouchableOpacity key={info.userId}
                                                           activeOpacity={roomOwnerUserId == userId ? 0.6 : 1}
                                                           onLongPress={roomOwnerUserId == userId ?
-                                                              () => setUserOpeModalVisible(true) :
+                                                              () => onSelectUser(info) :
                                                               () => {
                                                               }}>
                                             <View style={[styles.userInfoContainer]}>
@@ -354,7 +380,7 @@ export default function Room() {
                                 style={{margin: 8}}
                                 text='请出房间'
                                 source={require('../../assets/leave.png')}
-                                onPress={() => setUserOpeModalVisible(false)}
+                                onPress={onKickOut}
                             />
                         </View>
                     </BottomModal>
