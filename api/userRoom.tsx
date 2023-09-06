@@ -28,3 +28,7 @@ export const userSetOwner = (param) => {
     return post("/api/userRoom/owner", param)
 }
 
+export const userSetDealers = (param) => {
+    return post("/api/userRoom/dealers", param)
+}
+

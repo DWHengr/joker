@@ -18,7 +18,7 @@ import BottomModal from "../../component/BottomModal";
 import IconTextButton from "../../component/IconTextButton";
 import CustomSwitch from "../../component/CustomSwitch";
 import IconSelectMenu from "../../component/IconSelectMenu";
-import {userKickOut, userQuitRoom, userRoomInfo, userSetOwner} from "../../api/userRoom";
+import {userKickOut, userQuitRoom, userRoomInfo, userSetDealers, userSetOwner} from "../../api/userRoom";
 import {getUserPortrait} from "../../api/user";
 import {getUserId, getWsToken, removeRoomInfo} from "../../storage/user";
 import {useFocusEffect, useNavigation} from "@react-navigation/native";
@@ -89,6 +89,19 @@ export default function Room() {
             return;
         }
         userSetOwner({userId: currentSelectedUser.userId, roomId: roomInfo.id}).then(res => {
+            if (res.code != 0) {
+                toastError(res.msg)
+            }
+        }).finally(() => setUserOpeModalVisible(false))
+    }
+
+
+    const onUserSetDealers = () => {
+        if (!currentSelectedUser) {
+            toastError("请先选择成员~")
+            return;
+        }
+        userSetDealers({userId: currentSelectedUser.userId, roomId: roomInfo.id}).then(res => {
             if (res.code != 0) {
                 toastError(res.msg)
             }
@@ -368,7 +381,7 @@ export default function Room() {
                                 style={{margin: 8}}
                                 text='设置庄家'
                                 source={require('../../assets/crown.png')}
-                                onPress={() => setUserOpeModalVisible(false)}
+                                onPress={onUserSetDealers}
                             />
                             <IconTextButton
                                 style={{margin: 8}}
