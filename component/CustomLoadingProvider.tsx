@@ -1,6 +1,7 @@
 import React, {createContext, useCallback, useContext, useState} from "react";
 import {View, StyleSheet} from "react-native";
 import Spinner from 'react-native-loading-spinner-overlay';
+import {toastError} from "../utils/toast";
 
 const LoadingBarContext = createContext();
 
@@ -16,6 +17,12 @@ export default function CustomLoadingProvider({children}) {
     const showLoading = useCallback((tip = "正在加载中") => {
         setTip(tip);
         setIsLoading(true);
+        setTimeout(() => {
+            if (isLoading) {
+                setIsLoading(false);
+                toastError("应用超时~");
+            }
+        }, 15000)
     }, []);
 
     const hideLoading = useCallback(() => {
