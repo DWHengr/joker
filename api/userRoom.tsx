@@ -32,3 +32,6 @@ export const userSetDealers = (param) => {
     return post("/api/userRoom/dealers", param)
 }
 
+export const userScoreAdd1 = (param) => {
+    return post("/api/userRoom/score/add1", param)
+}

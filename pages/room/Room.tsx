@@ -18,7 +18,7 @@ import BottomModal from "../../component/BottomModal";
 import IconTextButton from "../../component/IconTextButton";
 import CustomSwitch from "../../component/CustomSwitch";
 import IconSelectMenu from "../../component/IconSelectMenu";
-import {userKickOut, userQuitRoom, userRoomInfo, userSetDealers, userSetOwner} from "../../api/userRoom";
+import {userKickOut, userQuitRoom, userRoomInfo, userScoreAdd1, userSetDealers, userSetOwner} from "../../api/userRoom";
 import {getUserPortrait} from "../../api/user";
 import {getUserId, getWsToken, removeRoomInfo} from "../../storage/user";
 import {useFocusEffect, useNavigation} from "@react-navigation/native";
@@ -102,6 +102,18 @@ export default function Room() {
             return;
         }
         userSetDealers({userId: currentSelectedUser.userId, roomId: roomInfo.id}).then(res => {
+            if (res.code != 0) {
+                toastError(res.msg)
+            }
+        }).finally(() => setUserOpeModalVisible(false))
+    }
+
+    const onUserScoreAdd1 = () => {
+        if (!currentSelectedUser) {
+            toastError("请先选择成员~")
+            return;
+        }
+        userScoreAdd1({userId: currentSelectedUser.userId, roomId: roomInfo.id}).then(res => {
             if (res.code != 0) {
                 toastError(res.msg)
             }
@@ -393,7 +405,7 @@ export default function Room() {
                                 style={{margin: 8}}
                                 text='积分+1'
                                 source={require('../../assets/increase.png')}
-                                onPress={() => setUserOpeModalVisible(false)}
+                                onPress={onUserScoreAdd1}
                             />
                             <IconTextButton
                                 style={{margin: 8}}
