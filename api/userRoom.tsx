@@ -35,3 +35,7 @@ export const userSetDealers = (param) => {
 export const userScoreAdd1 = (param) => {
     return post("/api/userRoom/score/add1", param)
 }
+
+export const userScoreSubtract1 = (param) => {
+    return post("/api/userRoom/score/subtract1", param)
+}

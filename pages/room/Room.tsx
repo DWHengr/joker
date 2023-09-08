@@ -18,7 +18,15 @@ import BottomModal from "../../component/BottomModal";
 import IconTextButton from "../../component/IconTextButton";
 import CustomSwitch from "../../component/CustomSwitch";
 import IconSelectMenu from "../../component/IconSelectMenu";
-import {userKickOut, userQuitRoom, userRoomInfo, userScoreAdd1, userSetDealers, userSetOwner} from "../../api/userRoom";
+import {
+    userKickOut,
+    userQuitRoom,
+    userRoomInfo,
+    userScoreAdd1,
+    userScoreSubtract1,
+    userSetDealers,
+    userSetOwner
+} from "../../api/userRoom";
 import {getUserPortrait} from "../../api/user";
 import {getUserId, getWsToken, removeRoomInfo} from "../../storage/user";
 import {useFocusEffect, useNavigation} from "@react-navigation/native";
@@ -114,6 +122,18 @@ export default function Room() {
             return;
         }
         userScoreAdd1({userId: currentSelectedUser.userId, roomId: roomInfo.id}).then(res => {
+            if (res.code != 0) {
+                toastError(res.msg)
+            }
+        }).finally(() => setUserOpeModalVisible(false))
+    }
+
+    const onUserScoreSubtract1 = () => {
+        if (!currentSelectedUser) {
+            toastError("请先选择成员~")
+            return;
+        }
+        userScoreSubtract1({userId: currentSelectedUser.userId, roomId: roomInfo.id}).then(res => {
             if (res.code != 0) {
                 toastError(res.msg)
             }
