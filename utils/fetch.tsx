@@ -1,4 +1,4 @@
-import { getToken } from "../storage/user";
+import {getToken} from "../storage/user";
 
 const URL = "http://114.67.242.151:18088";
 
@@ -14,8 +14,12 @@ const requestInterceptor = async (config) => {
 };
 
 // 响应拦截器函数
-const responseInterceptor = (response) => {
-    return response;
+let responseInterceptor = (response) => {
+};
+
+export const CustomResponseInterceptor = (interceptor) => {
+    if (interceptor)
+        responseInterceptor = interceptor
 };
 
 // 封装 Fetch 函数
@@ -24,7 +28,8 @@ const fetchWithInterceptors = async (url, options) => {
         const modifiedOptions = await requestInterceptor(options);
         const response = await fetch(url, modifiedOptions);
         const responseData = await response.json();
-        return responseInterceptor(responseData);
+        responseInterceptor(responseData);
+        return responseData;
     } catch (error) {
         throw error;
     }
