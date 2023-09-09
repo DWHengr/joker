@@ -10,6 +10,7 @@ import {createRoom} from "../../api/room";
 import {setCreatedRoomInfo} from "../../storage/user";
 import {useNavigation} from "@react-navigation/native";
 import {RoomType} from "../common/RoomType";
+import {toastError} from "../../utils/toast";
 
 export default function CreateRoom() {
     const [roomName, setRoomName] = useState("");
@@ -27,6 +28,9 @@ export default function CreateRoom() {
             if (res.code == 0) {
                 setCreatedRoomInfo(res.data)
                 onNavigate("Room")
+            } else {
+                if (res.msg)
+                    toastError(res.msg)
             }
         })
     }

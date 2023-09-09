@@ -13,7 +13,7 @@ import CustomHeaderReturn from "../../component/CustomHeaderReturn";
 import {theme} from "../common/Theme";
 import {useFocusEffect, useNavigation} from "@react-navigation/native";
 import {useCallback, useEffect, useState} from "react";
-import {toastInfo} from "../../utils/toast";
+import {toastError, toastInfo} from "../../utils/toast";
 import {getRoomNumber, removeRoomInfo} from "../../storage/user";
 import {roomInfoByCurrentUser} from "../../api/room";
 
@@ -59,7 +59,8 @@ export default function Home() {
                 onNavigate('Room')
             } else {
                 setRoomNumber(null);
-                toastInfo("房间已被解散~")
+                if (res.msg)
+                    toastError(res.msg)
                 removeRoomInfo();
             }
         })

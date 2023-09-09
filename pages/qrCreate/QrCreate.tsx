@@ -19,7 +19,8 @@ export default function QrCreate() {
             if (res.code == 0) {
                 setQrData(res.data.qrToken)
             } else {
-                toastError("二维码生成错误")
+
+                toastError(res.msg ? res.msg : "二维码生成错误")
             }
         })
     }, [])

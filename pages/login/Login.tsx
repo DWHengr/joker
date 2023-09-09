@@ -41,7 +41,8 @@ export default function Login() {
                 setLoginInfo(res.data);
                 globalContext.setIsLogin(true);
             } else {
-                toastError(res.msg);
+                if (res.msg)
+                    toastError(res.msg)
             }
         }).finally(() => loading.hideLoading())
     }

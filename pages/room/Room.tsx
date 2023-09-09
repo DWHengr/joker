@@ -86,7 +86,8 @@ export default function Room() {
         }
         userKickOut({userId: currentSelectedUser.userId, roomId: roomInfo.id}).then(res => {
             if (res.code != 0) {
-                toastError(res.msg)
+                if (res.msg)
+                    toastError(res.msg)
             }
         }).finally(() => setUserOpeModalVisible(false))
     }
@@ -98,7 +99,8 @@ export default function Room() {
         }
         userSetOwner({userId: currentSelectedUser.userId, roomId: roomInfo.id}).then(res => {
             if (res.code != 0) {
-                toastError(res.msg)
+                if (res.msg)
+                    toastError(res.msg)
             }
         }).finally(() => setUserOpeModalVisible(false))
     }
@@ -111,7 +113,8 @@ export default function Room() {
         }
         userSetDealers({userId: currentSelectedUser.userId, roomId: roomInfo.id}).then(res => {
             if (res.code != 0) {
-                toastError(res.msg)
+                if (res.msg)
+                    toastError(res.msg)
             }
         }).finally(() => setUserOpeModalVisible(false))
     }
@@ -123,7 +126,8 @@ export default function Room() {
         }
         userScoreAdd1({userId: currentSelectedUser.userId, roomId: roomInfo.id}).then(res => {
             if (res.code != 0) {
-                toastError(res.msg)
+                if (res.msg)
+                    toastError(res.msg)
             }
         }).finally(() => setUserOpeModalVisible(false))
     }
@@ -135,7 +139,8 @@ export default function Room() {
         }
         userScoreSubtract1({userId: currentSelectedUser.userId, roomId: roomInfo.id}).then(res => {
             if (res.code != 0) {
-                toastError(res.msg)
+                if (res.msg)
+                    toastError(res.msg)
             }
         }).finally(() => setUserOpeModalVisible(false))
     }
@@ -154,6 +159,9 @@ export default function Room() {
                 userRoomInfo().then(res => {
                     if (res.code == 0) {
                         setCurrentRoomInfo(res.data)
+                    } else {
+                        if (res.msg)
+                            toastError(res.msg)
                     }
                 }).finally(() => loading.hideLoading())
                 ws.send('open');
@@ -220,6 +228,9 @@ export default function Room() {
                     ...prev,
                     [userid]: url,
                 }))
+            } else {
+                if (res.msg)
+                    toastError(res.msg)
             }
         })
         return defaultPortraitImg;
@@ -238,7 +249,7 @@ export default function Room() {
                 removeRoomInfo();
                 backAction();
             } else {
-                toastError("房间退出失败")
+                toastError(res.msg ? res.msg : "房间退出失败")
             }
         })
     }
