@@ -27,6 +27,13 @@ export function removeRoomInfo() {
     removeValue(roomId).then();
 }
 
+export function removeLoginInfo() {
+    removeValue(token).then();
+    removeValue(wsToken).then();
+    removeValue(roomId).then();
+    removeValue(roomNumber).then();
+    removeValue(userId).then();
+}
 
 export async function getToken() {
     return await getStringValue(token)
