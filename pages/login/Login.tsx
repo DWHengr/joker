@@ -8,9 +8,6 @@ import {
     TouchableOpacity
 } from 'react-native'
 import {SafeAreaView} from 'react-native-safe-area-context'
-import {useNavigation} from "@react-navigation/native";
-import {NativeStackNavigationProp} from "@react-navigation/native-stack";
-import {RootStackParamList} from "../Main";
 import {LinearGradient} from "expo-linear-gradient";
 import {theme} from "../common/Theme";
 import GradualButton from "../../component/GradualButton";
@@ -20,13 +17,14 @@ import {toastError, toastInfo} from "../../utils/toast";
 import {setLoginInfo} from "../../storage/user";
 import CustomTextInput from "../../component/CustomTextInput";
 import {useLoading} from "../../component/CustomLoadingProvider";
+import {useGlobalContext} from "../../component/GlobalContextProvider";
 
 export default function Login() {
 
-    const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList, 'Login'>>()
     const [username, setUsername] = useState("")
     const [password, setPassword] = useState("")
     const loading = useLoading()
+    const globalContext = useGlobalContext();
 
     const onLogin = () => {
         if (!username) {
@@ -41,10 +39,7 @@ export default function Login() {
         login({account: username, password}).then(res => {
             if (res.code == 0) {
                 setLoginInfo(res.data);
-                navigation.reset({
-                    index: 0,
-                    routes: [{name: 'Tab'}],
-                })
+                globalContext.setIsLogin(true);
             } else {
                 toastError(res.msg);
             }

@@ -11,6 +11,7 @@ import {StatusBar} from "expo-status-bar";
 import JoinRoom from "./joinRoom/JoinRoom";
 import QrScan from "./qrScan/QrScan";
 import QrCreate from "./qrCreate/QrCreate";
+import {useGlobalContext} from "../component/GlobalContextProvider";
 
 export type RootStackParamList = {
     Login: undefined,
@@ -19,61 +20,63 @@ export type RootStackParamList = {
 }
 
 export default function Main() {
-
+    const globalContext = useGlobalContext();
+    
     const Stack = createNativeStackNavigator<RootStackParamList>();
-
     return (
         <>
             <View style={{zIndex: 999}}>
                 <Toast config={toastConfig}/>
             </View>
             <StatusBar style="auto"/>
-            <Stack.Navigator
-                initialRouteName='Login'
-                screenOptions={({route}) => ({
-                    headerShown: !['Login'].includes(route.name),
-                    gestureEnabled: true
-                })}>
-                < Stack.Screen
-                    name="Login"
-                    component={Login}
-                    options={{headerShown: false}}
-                ></Stack.Screen>
-                < Stack.Screen
-                    name="Tab"
-                    component={Tab}
-                    options={{headerShown: false}}
-                ></Stack.Screen>
-                < Stack.Screen
-                    name="Home"
-                    component={Home}
-                    options={{headerShown: false}}
-                ></Stack.Screen>
-                < Stack.Screen
-                    name="Room"
-                    component={Room}
-                    options={{headerShown: false}}
-                ></Stack.Screen>
-                < Stack.Screen
-                    name="CreateRoom"
-                    component={CreateRoom}
-                    options={{headerShown: false}}
-                ></Stack.Screen>
-                < Stack.Screen
-                    name="JoinRoom"
-                    component={JoinRoom}
-                    options={{headerShown: false}}
-                ></Stack.Screen>
-                < Stack.Screen
-                    name="QrScan"
-                    component={QrScan}
-                    options={{headerShown: false}}
-                ></Stack.Screen>
-                < Stack.Screen
-                    component={QrCreate}
-                    name="QrCreate"
-                    options={{headerShown: false}}
-                ></Stack.Screen>
+            <Stack.Navigator>
+                {
+                    !globalContext.isLogin ? (
+                        < Stack.Screen
+                            name="Login"
+                            component={Login}
+                            options={{headerShown: false}}
+                        ></Stack.Screen>
+                    ) : (
+                        <>
+                            < Stack.Screen
+                                name="Tab"
+                                component={Tab}
+                                options={{headerShown: false}}
+                            ></Stack.Screen>
+                            < Stack.Screen
+                                name="Home"
+                                component={Home}
+                                options={{headerShown: false}}
+                            ></Stack.Screen>
+                            < Stack.Screen
+                                name="Room"
+                                component={Room}
+                                options={{headerShown: false}}
+                            ></Stack.Screen>
+                            < Stack.Screen
+                                name="CreateRoom"
+                                component={CreateRoom}
+                                options={{headerShown: false}}
+                            ></Stack.Screen>
+                            < Stack.Screen
+                                name="JoinRoom"
+                                component={JoinRoom}
+                                options={{headerShown: false}}
+                            ></Stack.Screen>
+                            < Stack.Screen
+                                name="QrScan"
+                                component={QrScan}
+                                options={{headerShown: false}}
+                            ></Stack.Screen>
+                            < Stack.Screen
+                                component={QrCreate}
+                                name="QrCreate"
+                                options={{headerShown: false}}
+                            ></Stack.Screen>
+                        </>
+                    )
+                }
             </Stack.Navigator>
         </>
     )

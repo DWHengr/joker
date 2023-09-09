@@ -1,8 +1,17 @@
 import {Image, ScrollView, StyleSheet, Text, View} from 'react-native'
 import {theme} from "../common/Theme";
 import OperationList from "../../component/OperationList";
+import {removeLoginInfo} from "../../storage/user";
+import {useGlobalContext} from "../../component/GlobalContextProvider";
 
 export default function Mine() {
+    const globalContext = useGlobalContext();
+
+    const onLogout = () => {
+        removeLoginInfo()
+        globalContext.setIsLogin(false);
+    }
+
     return (
         <View style={[styles.container]}>
             <View style={{width: '100%', height: 160}}>
@@ -58,7 +67,7 @@ export default function Mine() {
                                 operations={[
                                     {
                                         title: "退出登录",
-                                        onPress: () => console.log(1),
+                                        onPress: onLogout,
                                         icon: require('../../assets/logout.png'),
                                     }
                                 ]}
