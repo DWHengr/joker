@@ -31,7 +31,7 @@ const fetchWithInterceptors = async (url, options) => {
         responseInterceptor(responseData);
         return responseData;
     } catch (error) {
-        throw error;
+        return {code: -2, msg: "网络异常,请求检查网络~"}
     }
 };
 
