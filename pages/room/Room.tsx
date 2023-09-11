@@ -22,7 +22,7 @@ import {
     userKickOut,
     userQuitRoom,
     userRoomInfo,
-    userScoreAdd1,
+    userScoreAdd1, userScoreSubmit,
     userScoreSubtract1,
     userSetDealers,
     userSetOwner
@@ -138,6 +138,15 @@ export default function Room() {
             return;
         }
         userScoreSubtract1({userId: currentSelectedUser.userId, roomId: roomInfo.id}).then(res => {
+            if (res.code != 0) {
+                if (res.msg)
+                    toastError(res.msg)
+            }
+        }).finally(() => setUserOpeModalVisible(false))
+    }
+
+    const onUserScoreSubmit = () => {
+        userScoreSubmit({score: scoreResult}).then(res => {
             if (res.code != 0) {
                 if (res.msg)
                     toastError(res.msg)
@@ -341,6 +350,7 @@ export default function Room() {
                             <GradualButton
                                 size='sm'
                                 buttonStyle={{width: 90, borderRadius: 5, marginLeft: 2}}
+                                onPress={onUserScoreSubmit}
                                 text="提交"
                             />
                             <GradualButton
@@ -442,7 +452,7 @@ export default function Room() {
                                 style={{margin: 8}}
                                 text='积分-1'
                                 source={require('../../assets/decrease.png')}
-                                onPress={() => setUserOpeModalVisible(false)}
+                                onPress={onUserScoreSubtract1}
                             />
                             <IconTextButton
                                 style={{margin: 8}}

@@ -39,3 +39,7 @@ export const userScoreAdd1 = (param) => {
 export const userScoreSubtract1 = (param) => {
     return post("/api/userRoom/score/subtract1", param)
 }
+
+export const userScoreSubmit = (param) => {
+    return post("/api/userRoom/score/submit", param)
+}
