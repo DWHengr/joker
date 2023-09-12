@@ -27,11 +27,15 @@ export default function CustomLoadingProvider({children}) {
                 clearTimeout(timerRef.current);
             }
             timerRef.current = setTimeout(() => {
-                setIsLoading(false);
                 if (isLoading) {
+                    setIsLoading(false);
                     toastError("应用超时~");
                 }
-            }, 10000)
+            }, 15000)
+        } else {
+            if (timerRef.current) {
+                clearTimeout(timerRef.current);
+            }
         }
     }, [isLoading])
 
