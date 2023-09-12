@@ -22,7 +22,7 @@ import {
     userKickOut,
     userQuitRoom,
     userRoomInfo,
-    userScoreAdd1, userScoreSubmit,
+    userScoreAdd1, userScoreAnnul, userScoreSubmit,
     userScoreSubtract1,
     userSetDealers,
     userSetOwner
@@ -44,7 +44,7 @@ export default function Room() {
     const navigation = useNavigation();
     const loading = useLoading();
     const [currentSelectedUser, setCurrentSelectedUser] = useState(null);
-
+    const [currentUserInfo, setCurrentUserInfo] = useState({status: ""});
 
     let reconnectAttempts = 0;
     const maxReconnectAttempts = 10;
@@ -55,6 +55,14 @@ export default function Room() {
         serRoomInfo(data.room)
         setUserInfos(data.userRooms)
         setRoomOwnerUserId(data.roomOwnerUserId)
+        for (let index = 0; index < data.userRooms.length; index++) {
+            let userinfo = data.userRooms[index];
+            if (userinfo.userId == userId) {
+                setCurrentUserInfo(userinfo)
+                break
+            }
+        }
+
     }
 
     const onMsg = (msg) => {
@@ -154,6 +162,15 @@ export default function Room() {
         }).finally(() => setUserOpeModalVisible(false))
     }
 
+    const onUserScoreAnnul = () => {
+        userScoreAnnul().then(res => {
+            if (res.code != 0) {
+                if (res.msg)
+                    toastError(res.msg)
+            }
+        }).finally(() => setUserOpeModalVisible(false))
+    }
+
     const onWb = async () => {
         if (reconnectAttempts < maxReconnectAttempts) {
             let token;
@@ -213,12 +230,19 @@ export default function Room() {
 
     useEffect(() => {
         loading.showLoading("加载中...")
-        getUserId().then(res => setUserId(res))
-        onWb();
+        getUserId().then(async res => {
+            setUserId(res)
+        })
         return () => {
             if (ws) ws.close();
         }
     }, [])
+
+
+    useEffect(() => {
+        onWb();
+    }, [userId])
+
 
     const [userOpeModalVisible, setUserOpeModalVisible] = useState(false);
     const [cardsVisible, setCardsVisible] = useState(false);
@@ -347,12 +371,24 @@ export default function Room() {
                                     () => setScoreResult((stringToNumber(scoreResult) + 1) + "")
                                 }
                             />
-                            <GradualButton
-                                size='sm'
-                                buttonStyle={{width: 90, borderRadius: 5, marginLeft: 2}}
-                                onPress={onUserScoreSubmit}
-                                text="提交"
-                            />
+                            {
+                                currentUserInfo.status != UserRoomStatus.Settled &&
+                                <GradualButton
+                                    size='sm'
+                                    buttonStyle={{width: 90, borderRadius: 5, marginLeft: 2}}
+                                    onPress={onUserScoreSubmit}
+                                    text="提交"
+                                />
+                            }
+                            {
+                                currentUserInfo.status == UserRoomStatus.Settled &&
+                                <GradualButton
+                                    size='sm'
+                                    buttonStyle={{width: 90, borderRadius: 5, marginLeft: 2}}
+                                    onPress={onUserScoreAnnul}
+                                    text="撤销"
+                                />
+                            }
                             <GradualButton
                                 size='sm'
                                 buttonStyle={{width: 90, borderRadius: 5, marginLeft: 2}}
@@ -470,6 +506,7 @@ export default function Room() {
 
 import {toastError, toastInfo} from "../../utils/toast";
 import {useLoading} from "../../component/CustomLoadingProvider";
+import {UserRoomStatus} from "../common/UserRoomStatus";
 
 const styles = StyleSheet.create({
     container: {
