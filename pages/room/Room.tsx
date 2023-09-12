@@ -208,6 +208,21 @@ export default function Room() {
         }
     }
 
+    const getStatusTitle = (status) => {
+        switch (status) {
+            case UserRoomStatus.Settled:
+                return "已结算"
+            case UserRoomStatus.Unsettled:
+                return "未结算"
+            case UserRoomStatus.Ready:
+                return "已准备"
+            case UserRoomStatus.Unripe:
+                return "未准备"
+            default:
+                return "——"
+        }
+    }
+
     const backAction = () => {
         navigation.reset({
             index: 0,
@@ -450,7 +465,7 @@ export default function Room() {
                                                     style={{
                                                         width: 100,
                                                         alignItems: 'center'
-                                                    }}><Text>{info.status}</Text></View>
+                                                    }}><Text>{getStatusTitle(info.status)}</Text></View>
                                             </View>
                                         </TouchableOpacity>
                                     ))
