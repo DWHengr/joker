@@ -1,4 +1,4 @@
-import React, {createContext, useCallback, useContext, useState} from "react";
+import React, {createContext, useCallback, useContext, useEffect, useRef, useState} from "react";
 import {View, StyleSheet} from "react-native";
 import Spinner from 'react-native-loading-spinner-overlay';
 import {toastError} from "../utils/toast";
@@ -13,17 +13,27 @@ export function useLoading() {
 export default function CustomLoadingProvider({children}) {
     const [isLoading, setIsLoading] = useState(false);
     const [tip, setTip] = useState("");
+    const timerRef = useRef(null);
 
     const showLoading = useCallback((tip = "正在加载中") => {
         setTip(tip);
         setIsLoading(true);
-        setTimeout(() => {
-            if (isLoading) {
-                setIsLoading(false);
-                toastError("应用超时~");
-            }
-        }, 15000)
     }, []);
+
+    useEffect(() => {
+        if (isLoading) {
+            // 清除之前的定时器
+            if (timerRef.current) {
+                clearTimeout(timerRef.current);
+            }
+            timerRef.current = setTimeout(() => {
+                setIsLoading(false);
+                if (isLoading) {
+                    toastError("应用超时~");
+                }
+            }, 10000)
+        }
+    }, [isLoading])
 
     const hideLoading = useCallback(() => {
         setIsLoading(false);
