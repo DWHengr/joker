@@ -47,3 +47,7 @@ export const userScoreSubmit = (param) => {
 export const userScoreAnnul = () => {
     return post("/api/userRoom/score/annul", null)
 }
+
+export const userRoomStart = () => {
+    return post("/api/userRoom/start", null)
+}
