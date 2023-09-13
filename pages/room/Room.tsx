@@ -21,7 +21,7 @@ import IconSelectMenu from "../../component/IconSelectMenu";
 import {
     userKickOut,
     userQuitRoom,
-    userRoomInfo,
+    userRoomInfo, userRoomStart,
     userScoreAdd1, userScoreAnnul, userScoreSubmit,
     userScoreSubtract1,
     userSetDealers,
@@ -38,6 +38,7 @@ export default function Room() {
     const [userInfos, setUserInfos] = useState([]);
     const [roomInfo, serRoomInfo] = useState({number: "", round: "", id: "", name: "", type: ""});
     const [roomOwnerUserId, setRoomOwnerUserId] = useState("userid");
+    const [roomDealersUserId, setRoomDealersUserId] = useState("userid");
     const [userId, setUserId] = useState("");
     const [portraitCache, serPortraitCache] = useState({});
     const defaultPortraitImg = require("../../assets/icon.png")
@@ -55,6 +56,7 @@ export default function Room() {
         serRoomInfo(data.room)
         setUserInfos(data.userRooms)
         setRoomOwnerUserId(data.roomOwnerUserId)
+        setRoomDealersUserId(data.roomDealersUserId)
         for (let index = 0; index < data.userRooms.length; index++) {
             let userinfo = data.userRooms[index];
             if (userinfo.userId == userId) {
@@ -164,6 +166,15 @@ export default function Room() {
 
     const onUserScoreAnnul = () => {
         userScoreAnnul().then(res => {
+            if (res.code != 0) {
+                if (res.msg)
+                    toastError(res.msg)
+            }
+        }).finally(() => setUserOpeModalVisible(false))
+    }
+
+    const onUserRoomStart = () => {
+        userRoomStart().then(res => {
             if (res.code != 0) {
                 if (res.msg)
                     toastError(res.msg)
@@ -292,6 +303,7 @@ export default function Room() {
     }
 
     const onQuitRoom = () => {
+
         userQuitRoom({roomId: roomInfo.id}).then(res => {
             if (res.code == 0) {
                 removeRoomInfo();
@@ -333,7 +345,16 @@ export default function Room() {
                                                source={require("../../assets/qr-icon.png")}/>
                                     </TouchableOpacity>
                                 </View>
-                                <Text style={{color: theme.primary, fontSize: 12}}>第{roomInfo.round}轮</Text>
+                                <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                                    <Text style={{color: theme.primary, fontSize: 12,}}>第</Text>
+                                    <Text style={{
+                                        fontSize: 18,
+                                        fontWeight: 700,
+                                        marginLeft: 2,
+                                        marginRight: 2
+                                    }}>{roomInfo.round}</Text>
+                                    <Text style={{color: theme.primary, fontSize: 12,}}>轮</Text>
+                                </View>
                             </View>
                             <View style={{flexDirection: 'row'}}>
                                 {roomOwnerUserId != userId &&
@@ -356,60 +377,67 @@ export default function Room() {
                         </View>
                         <View
                             style={{flexDirection: 'row', height: 50, justifyContent: 'center', alignItems: 'center'}}>
-                            <GradualButton
-                                size='sm' buttonStyle={{width: 30, borderRadius: 5}} text="-"
-                                onPress={() => {
-                                    setScoreResult((stringToNumber(scoreResult) - 1) + "")
-                                }}
-                            />
-                            <View style={{
-                                width: 40,
-                            }}>
-                                <TextInput
-                                    style={{
-                                        color: theme.secondary,
-                                        borderRadius: 4,
-                                        paddingLeft: 2,
-                                        paddingRight: 2,
-                                        backgroundColor: theme.primary,
-                                    }}
-                                    keyboardType="numeric"
-                                    value={scoreResult}
-                                    placeholder="得分"
-                                    placeholderTextColor={theme.secondary}
-                                    onChangeText={(text) => setScoreResult(text.replace(/[^-0-9]/g, ''))}
-                                ></TextInput>
-                            </View>
-                            <GradualButton
-                                size='sm' buttonStyle={{width: 30, borderRadius: 5}} isPros={true} text="+"
-                                onPress={
-                                    () => setScoreResult((stringToNumber(scoreResult) + 1) + "")
-                                }
-                            />
-                            {
-                                currentUserInfo.status != UserRoomStatus.Settled &&
+                            {roomDealersUserId != userId &&
+                                <>
+                                    <GradualButton
+                                        size='sm' buttonStyle={{width: 30, borderRadius: 5}} text="-"
+                                        onPress={() => {
+                                            setScoreResult((stringToNumber(scoreResult) - 1) + "")
+                                        }}
+                                    />
+                                    <View style={{
+                                        width: 40,
+                                    }}>
+                                        <TextInput
+                                            style={{
+                                                color: theme.secondary,
+                                                borderRadius: 4,
+                                                paddingLeft: 2,
+                                                paddingRight: 2,
+                                                backgroundColor: theme.primary,
+                                            }}
+                                            keyboardType="numeric"
+                                            value={scoreResult}
+                                            placeholder="得分"
+                                            placeholderTextColor={theme.secondary}
+                                            onChangeText={(text) => setScoreResult(text.replace(/[^-0-9]/g, ''))}
+                                        ></TextInput>
+                                    </View>
+                                    <GradualButton
+                                        size='sm' buttonStyle={{width: 30, borderRadius: 5}} isPros={true} text="+"
+                                        onPress={
+                                            () => setScoreResult((stringToNumber(scoreResult) + 1) + "")
+                                        }
+                                    />
+                                    {
+                                        currentUserInfo.status != UserRoomStatus.Settled &&
+                                        <GradualButton
+                                            size='sm'
+                                            buttonStyle={{width: 90, borderRadius: 5, marginLeft: 2}}
+                                            onPress={onUserScoreSubmit}
+                                            text="提交"
+                                        />
+                                    }
+                                    {
+                                        currentUserInfo.status == UserRoomStatus.Settled &&
+                                        <GradualButton
+                                            size='sm'
+                                            buttonStyle={{width: 90, borderRadius: 5, marginLeft: 2}}
+                                            onPress={onUserScoreAnnul}
+                                            text="撤销"
+                                        />
+                                    }
+                                </>
+                            }
+                            {roomOwnerUserId == userId &&
                                 <GradualButton
                                     size='sm'
                                     buttonStyle={{width: 90, borderRadius: 5, marginLeft: 2}}
-                                    onPress={onUserScoreSubmit}
-                                    text="提交"
+                                    isPros={true}
+                                    onPress={onUserRoomStart}
+                                    text="开始"
                                 />
                             }
-                            {
-                                currentUserInfo.status == UserRoomStatus.Settled &&
-                                <GradualButton
-                                    size='sm'
-                                    buttonStyle={{width: 90, borderRadius: 5, marginLeft: 2}}
-                                    onPress={onUserScoreAnnul}
-                                    text="撤销"
-                                />
-                            }
-                            <GradualButton
-                                size='sm'
-                                buttonStyle={{width: 90, borderRadius: 5, marginLeft: 2}}
-                                isPros={true}
-                                text="准备"
-                            />
                         </View>
                         <ScrollView showsVerticalScrollIndicator={false} style={{width: '100%'}}>
                             <View>
