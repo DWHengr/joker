@@ -489,11 +489,15 @@ export default function Room() {
                                                         }}>{info.score}</Text>
                                                     </View>
                                                 </View>
-                                                <View
-                                                    style={{
-                                                        width: 100,
-                                                        alignItems: 'center'
-                                                    }}><Text>{getStatusTitle(info.status)}</Text></View>
+                                                <View style={{
+                                                    width: 100,
+                                                    alignItems: 'center'
+                                                }}>
+                                                    <Text>{getStatusTitle(info.status)}</Text>
+                                                    <Text style={{color: info.roundScore > 0 ? '#63ad4f' : theme.primary,}}>
+                                                        {info.roundScore}
+                                                    </Text>
+                                                </View>
                                             </View>
                                         </TouchableOpacity>
                                     ))
