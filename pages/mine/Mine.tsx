@@ -3,14 +3,29 @@ import {theme} from "../common/Theme";
 import OperationList from "../../component/OperationList";
 import {removeLoginInfo} from "../../storage/user";
 import {useGlobalContext} from "../../component/GlobalContextProvider";
+import {useEffect, useState} from "react";
+import {getUserProfile} from "../../api/user";
+import {toastError} from "../../utils/toast";
 
 export default function Mine() {
     const globalContext = useGlobalContext();
+    const [userProfileInfo, setUserProfileInfo] = useState({name: "", portrait: "", phone: ""});
 
     const onLogout = () => {
         removeLoginInfo()
         globalContext.setIsLogin(false);
     }
+
+    useEffect(() => {
+        getUserProfile().then(res => {
+            console.log(res)
+            if (res.code == 0) {
+                setUserProfileInfo(res.data)
+            } else {
+                toastError(res.msg ? res.msg : "个人信息查询失败")
+            }
+        })
+    }, [])
 
     return (
         <View style={[styles.container]}>
@@ -21,14 +36,12 @@ export default function Mine() {
             <View style={[styles.userInfoContainer]}>
                 <View>
                     <Image style={{width: 60, height: 60, borderRadius: 30, marginTop: -30}}
-                           source={{
-                               uri: 'http://pic.imeitou.com/uploads/allimg/211216/3-21121609215O03.jpg'
-                           }}>
+                           source={(userProfileInfo.portrait ? {uri: userProfileInfo.portrait} : require("../../assets/icon.png"))}>
                     </Image>
                 </View>
-                <Text style={{marginTop: 5, color: theme.primary, fontSize: 18}}>Heath</Text>
+                <Text style={{marginTop: 5, color: theme.primary, fontSize: 18}}>{userProfileInfo.name}</Text>
                 <View style={{marginTop: 5, flexDirection: 'row'}}>
-                    <Text style={{color: theme.secondary, fontSize: 14}}>18888888888</Text>
+                    <Text style={{color: theme.secondary, fontSize: 14}}>{userProfileInfo.phone}</Text>
                     <Text style={{color: theme.secondary, fontSize: 14, marginLeft: 5}}>去修改 >></Text>
                 </View>
             </View>

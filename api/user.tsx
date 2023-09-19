@@ -7,3 +7,7 @@ export const login = (loginInfo) => {
 export const getUserPortrait = (userid) => {
     return get("/api/user/portrait", userid)
 }
+
+export const getUserProfile = () => {
+    return get("/api/user/profile")
+}
