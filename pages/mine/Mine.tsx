@@ -1,4 +1,4 @@
-import {Image, ScrollView, StyleSheet, Text, View} from 'react-native'
+import {Image, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native'
 import {theme} from "../common/Theme";
 import OperationList from "../../component/OperationList";
 import {removeLoginInfo} from "../../storage/user";
@@ -6,10 +6,12 @@ import {useGlobalContext} from "../../component/GlobalContextProvider";
 import {useEffect, useState} from "react";
 import {getUserProfile} from "../../api/user";
 import {toastError} from "../../utils/toast";
+import {useNavigation} from "@react-navigation/native";
 
 export default function Mine() {
     const globalContext = useGlobalContext();
     const [userProfileInfo, setUserProfileInfo] = useState({name: "", portrait: "", phone: ""});
+    const navigation = useNavigation();
 
     const onLogout = () => {
         removeLoginInfo()
@@ -42,7 +44,9 @@ export default function Mine() {
                 <Text style={{marginTop: 5, color: theme.primary, fontSize: 18}}>{userProfileInfo.name}</Text>
                 <View style={{marginTop: 5, flexDirection: 'row'}}>
                     <Text style={{color: theme.secondary, fontSize: 14}}>{userProfileInfo.phone}</Text>
-                    <Text style={{color: theme.secondary, fontSize: 14, marginLeft: 5}}>去修改 >></Text>
+                    <TouchableOpacity onPress={() => navigation.navigate("ModifyUserName")}>
+                        <Text style={{color: theme.secondary, fontSize: 14, marginLeft: 5}}>去修改 >></Text>
+                    </TouchableOpacity>
                 </View>
             </View>
             <View style={[styles.contentContainer]}>

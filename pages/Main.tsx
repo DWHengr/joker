@@ -12,6 +12,7 @@ import JoinRoom from "./joinRoom/JoinRoom";
 import QrScan from "./qrScan/QrScan";
 import QrCreate from "./qrCreate/QrCreate";
 import {useGlobalContext} from "../component/GlobalContextProvider";
+import ModifyUserName from "./modifyUserName/ModifyUserName";
 
 export type RootStackParamList = {
     Login: undefined,
@@ -21,7 +22,7 @@ export type RootStackParamList = {
 
 export default function Main() {
     const globalContext = useGlobalContext();
-    
+
     const Stack = createNativeStackNavigator<RootStackParamList>();
     return (
         <>
@@ -72,6 +73,11 @@ export default function Main() {
                             < Stack.Screen
                                 component={QrCreate}
                                 name="QrCreate"
+                                options={{headerShown: false}}
+                            ></Stack.Screen>
+                            < Stack.Screen
+                                component={ModifyUserName}
+                                name="ModifyUserName"
                                 options={{headerShown: false}}
                             ></Stack.Screen>
                         </>
