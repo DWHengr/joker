@@ -11,3 +11,7 @@ export const getUserPortrait = (userid) => {
 export const getUserProfile = () => {
     return get("/api/user/profile")
 }
+
+export const modifyName = (nameInfo) => {
+    return post("/api/user/modify/name", nameInfo)
+}
