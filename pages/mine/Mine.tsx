@@ -3,31 +3,37 @@ import {theme} from "../common/Theme";
 import OperationList from "../../component/OperationList";
 import {removeLoginInfo} from "../../storage/user";
 import {useGlobalContext} from "../../component/GlobalContextProvider";
-import {useEffect, useState} from "react";
+import {useCallback, useState} from "react";
 import {getUserProfile} from "../../api/user";
 import {toastError} from "../../utils/toast";
-import {useNavigation} from "@react-navigation/native";
+import {useFocusEffect, useNavigation} from "@react-navigation/native";
+import {useLoading} from "../../component/CustomLoadingProvider";
 
 export default function Mine() {
     const globalContext = useGlobalContext();
     const [userProfileInfo, setUserProfileInfo] = useState({name: "", portrait: "", phone: ""});
     const navigation = useNavigation();
+    const loading = useLoading()
 
     const onLogout = () => {
         removeLoginInfo()
         globalContext.setIsLogin(false);
     }
 
-    useEffect(() => {
-        getUserProfile().then(res => {
-            console.log(res)
-            if (res.code == 0) {
-                setUserProfileInfo(res.data)
-            } else {
-                toastError(res.msg ? res.msg : "个人信息查询失败")
-            }
-        })
-    }, [])
+    useFocusEffect(
+        useCallback(() => {
+            loading.showLoading("加载中...")
+            getUserProfile().then(res => {
+                if (res.code == 0) {
+                    setUserProfileInfo(res.data)
+                } else {
+                    toastError(res.msg ? res.msg : "个人信息查询失败")
+                }
+            }).finally(() => {
+                loading.hideLoading()
+            })
+        }, [])
+    );
 
     return (
         <View style={[styles.container]}>
