@@ -28,7 +28,11 @@ export default function ModifyUserName() {
             <View style={{height: "100%"}}>
                 <CustomHeaderReturn title='更改名称' isReturn={true}/>
                 <View style={{alignItems: 'center', padding: 20, backgroundColor: '#fff', height: '100%'}}>
-                    <CustomTextInput value={newUserName} onChangeText={(value) => setNewUserName(value)}/>
+                    <CustomTextInput
+                        value={newUserName}
+                        onChangeText={(value) => setNewUserName(value)}
+                        limit={10}
+                    />
                     <View style={{alignItems: 'flex-start', width: '100%'}}>
                         <Text style={{color: theme.secondary}}>修改一个好听的名字。</Text>
                     </View>
