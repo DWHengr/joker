@@ -70,6 +70,11 @@ export default function Mine() {
                                         title: "我的记录",
                                         onPress: () => console.log(1),
                                         icon: require('../../assets/record.png'),
+                                    },
+                                    {
+                                        title: "修改密码",
+                                        onPress: () => console.log(1),
+                                        icon: require('../../assets/modifyPassword.png'),
                                     }
                                 ]}
                             />
