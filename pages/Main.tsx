@@ -13,6 +13,7 @@ import QrScan from "./qrScan/QrScan";
 import QrCreate from "./qrCreate/QrCreate";
 import {useGlobalContext} from "../component/GlobalContextProvider";
 import ModifyUserName from "./modifyUserName/ModifyUserName";
+import ModifyPassword from "./modifyPassword/ModifyPassword";
 
 export type RootStackParamList = {
     Login: undefined,
@@ -78,6 +79,11 @@ export default function Main() {
                             < Stack.Screen
                                 component={ModifyUserName}
                                 name="ModifyUserName"
+                                options={{headerShown: false}}
+                            ></Stack.Screen>
+                            < Stack.Screen
+                                component={ModifyPassword}
+                                name="ModifyPassword"
                                 options={{headerShown: false}}
                             ></Stack.Screen>
                         </>

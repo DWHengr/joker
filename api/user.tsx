@@ -15,3 +15,7 @@ export const getUserProfile = () => {
 export const modifyName = (nameInfo) => {
     return post("/api/user/modify/name", nameInfo)
 }
+
+export const modifyPassword = (param) => {
+    return post("/api/user/modify/password", param)
+}

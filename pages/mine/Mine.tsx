@@ -73,7 +73,7 @@ export default function Mine() {
                                     },
                                     {
                                         title: "修改密码",
-                                        onPress: () => console.log(1),
+                                        onPress: () => navigation.navigate("ModifyPassword"),
                                         icon: require('../../assets/modifyPassword.png'),
                                     }
                                 ]}
